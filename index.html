@@ -3,34 +3,1214 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>&#x5E02;&#x957F;&#x6A21;&#x62DF; MVP</title>
+  <title>市长气候模拟游戏</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:Arial,'Microsoft YaHei',sans-serif;background:#eef3f7;color:#172033}header{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:16px 24px;background:linear-gradient(135deg,#14385c,#2d6a9f);color:white}h1,h2,p{margin:0}h1{font-size:22px;margin-bottom:4px}h2{color:#14385c;font-size:17px;margin-bottom:10px}header p{font-size:14px;opacity:.9}button{border:0;border-radius:8px;padding:9px 14px;cursor:pointer;font:inherit;background:white;color:#172033}.primary{background:#2e7d32;color:white}.top-actions{display:flex;align-items:center;gap:10px;white-space:nowrap}.shell{display:grid;grid-template-columns:220px minmax(420px,1fr) 260px;gap:18px;width:min(1180px,calc(100vw - 32px));margin:18px auto}.panel{background:white;border:1px solid #d9e2ec;border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(17,32,51,.08)}.hint{color:#617080;font-size:13px;line-height:1.5;margin-bottom:12px}.facility{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;width:100%;margin-bottom:10px;border:2px solid #d9e2ec;background:white;text-align:left}.facility.selected{border-color:#2d6a9f;background:#e8f2fb}.facility.disabled{opacity:.48;cursor:not-allowed}.mark{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;color:white;font-weight:700}.facility small{color:#617080}.map{display:grid;grid-template-columns:repeat(12,1fr);aspect-ratio:1/1;overflow:hidden;border:2px solid #14385c;border-radius:14px;background:#d9e2ec}.cell{display:grid;place-items:center;border:1px solid rgba(23,32,51,.08);color:white;font-size:13px;font-weight:700;cursor:pointer;user-select:none}.cell:hover{outline:3px solid #14385c;z-index:1}.legend{display:flex;flex-wrap:wrap;gap:10px 14px;margin-top:12px;color:#435160;font-size:13px}.legend-item{display:inline-flex;align-items:center;gap:6px}.swatch{width:16px;height:16px;border:1px solid rgba(23,32,51,.25);border-radius:4px}.metric{padding:13px;margin-bottom:10px;border:1px solid #d9e2ec;border-radius:12px;background:#f8fbfd}.metric-label{color:#617080;font-size:13px;margin-bottom:5px}.metric-value{color:#14385c;font-size:25px;font-weight:800}.tip{padding:12px;margin-top:12px;border-left:4px solid #2d6a9f;border-radius:8px;background:#e8f2fb;color:#264056;font-size:13px;line-height:1.5}.result{margin-top:12px;padding-top:12px;border-top:1px solid #d9e2ec;color:#435160;font-size:13px;line-height:1.6}.modal{position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:rgba(10,18,30,.58)}.modal.hidden{display:none}.dialog{width:min(460px,100%);padding:22px;border-radius:16px;background:white;box-shadow:0 20px 80px rgba(0,0,0,.25)}.question{margin:14px 0;color:#172033;font-size:14px}.question strong{display:block;margin-bottom:6px}.question label{display:block;margin:5px 0;color:#435160}.dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}@media(max-width:900px){header,.top-actions{align-items:flex-start;flex-direction:column}.shell{grid-template-columns:1fr}}
+    :root {
+      --ink: #123052;
+      --muted: #607287;
+      --blue: #1688d9;
+      --blue-soft: #dff2ff;
+      --green: #229953;
+      --green-soft: #e8f8ee;
+      --orange: #f49b3f;
+      --orange-soft: #fff1df;
+      --red: #df4a35;
+      --red-soft: #fff0ed;
+      --card: rgba(255, 255, 255, 0.94);
+      --line: #d8e4ef;
+      --shadow: 0 18px 50px rgba(33, 80, 120, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(91, 177, 240, 0.28), transparent 32%),
+        linear-gradient(180deg, #f4fbff 0%, #e8f0f7 52%, #dce9f5 100%);
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1220px, calc(100vw - 28px));
+      margin: 0 auto;
+      padding: 16px 0 24px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 116px;
+      padding: 20px 28px;
+      border: 1px solid rgba(59, 139, 195, 0.24);
+      border-radius: 18px;
+      background:
+        linear-gradient(120deg, rgba(255, 255, 255, 0.98), rgba(226, 244, 255, 0.9)),
+        linear-gradient(90deg, #fff, #dff3ff);
+      box-shadow: var(--shadow);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      right: -25px;
+      bottom: 0;
+      width: 390px;
+      height: 92px;
+      opacity: 0.82;
+      background:
+        linear-gradient(to top, #7fc278 0 20px, transparent 20px),
+        linear-gradient(to top, #76a9d7 0 52px, transparent 52px);
+      clip-path: polygon(0 100%, 0 68%, 8% 68%, 8% 38%, 15% 38%, 15% 70%, 21% 70%, 21% 48%, 28% 48%, 28% 70%, 35% 70%, 35% 22%, 42% 22%, 42% 100%, 0 100%, 50% 100%, 50% 42%, 56% 42%, 56% 100%, 60% 100%, 60% 22%, 66% 22%, 66% 100%, 70% 100%, 70% 50%, 76% 50%, 76% 100%, 80% 100%, 80% 30%, 86% 30%, 86% 100%, 100% 100%);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: 275px;
+      bottom: 26px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 5px solid rgba(22, 136, 217, 0.42);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.75) inset;
+    }
+
+    .brand {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .planet {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 34% 28%, #99dbff 0 16%, transparent 17%),
+        radial-gradient(circle at 42% 54%, #3eaf62 0 20%, transparent 21%),
+        radial-gradient(circle at 70% 35%, #73c461 0 18%, transparent 19%),
+        linear-gradient(135deg, #2b9fea, #145fa4);
+      box-shadow: 0 10px 18px rgba(20, 95, 164, 0.22);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 44px);
+      line-height: 1;
+      letter-spacing: -1.4px;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      max-width: 680px;
+      color: #4e6073;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .budget-strip {
+      position: absolute;
+      z-index: 1;
+      right: 28px;
+      top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid rgba(45, 106, 159, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--muted);
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    .budget-strip strong {
+      color: var(--ink);
+      font-size: 20px;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 250px minmax(520px, 1fr) 260px;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .side-panel {
+      padding: 18px 14px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: var(--ink);
+    }
+
+    .title-icon {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .helper {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .facility {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 12px;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border: 2px solid #d9e4ef;
+      border-radius: 12px;
+      background: #fff;
+      text-align: left;
+      box-shadow: 0 8px 18px rgba(30, 75, 115, 0.06);
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .facility:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(30, 75, 115, 0.1);
+    }
+
+    .facility.selected {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(22, 136, 217, 0.12), 0 12px 24px rgba(30, 75, 115, 0.12);
+    }
+
+    .facility.disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+    }
+
+    .facility.coal.selected {
+      border-color: var(--red);
+    }
+
+    .facility.wind.selected {
+      border-color: var(--blue);
+    }
+
+    .facility.heatPump.selected {
+      border-color: var(--green);
+    }
+
+    .facility-icon {
+      display: grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 900;
+      font-size: 22px;
+      box-shadow: inset 0 -18px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    .facility-icon.coal {
+      background: linear-gradient(160deg, #ff7b60, #cc2e1f);
+    }
+
+    .facility-icon.wind {
+      background: linear-gradient(160deg, #4cb2ff, #0477c9);
+    }
+
+    .facility-icon.heatPump {
+      background: linear-gradient(160deg, #49b862, #16723a);
+    }
+
+    .facility-name {
+      display: block;
+      margin: 3px 0 5px;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .facility-meta {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .facility-note {
+      display: block;
+      color: #7c8a99;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .how-card {
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid #bde1fb;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #eef9ff, #e9f4ff);
+      color: #31506d;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .how-card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #1567aa;
+      font-size: 14px;
+    }
+
+    .guide-button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 9px 12px;
+      border: 1px solid #9bd0f4;
+      border-radius: 10px;
+      background: #fff;
+      color: #146ec2;
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 6px 14px rgba(22, 136, 217, 0.1);
+    }
+
+    .map-panel {
+      padding: 18px 22px 22px;
+    }
+
+    .map-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 14px;
+    }
+
+    .grid-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .map-wrap {
+      position: relative;
+      padding: 20px 24px 14px;
+      border: 1px solid #dce7f1;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 42% 40%, rgba(255, 255, 255, 0.7), transparent 34%),
+        linear-gradient(180deg, #f9fcff, #eef6fb);
+    }
+
+    .axis {
+      display: grid;
+      grid-template-columns: 22px repeat(12, 1fr);
+      gap: 2px;
+      margin: 0 0 6px;
+      color: #56687b;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .map-row {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 2px;
+      align-items: stretch;
+    }
+
+    .row-numbers {
+      display: grid;
+      grid-template-rows: repeat(12, 1fr);
+      gap: 2px;
+      color: #56687b;
+      font-size: 12px;
+      text-align: center;
+      align-items: center;
+    }
+
+    .map {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border: 2px solid #16436b;
+      border-radius: 16px;
+      background: #dfe6ee;
+    }
+
+    .cell {
+      position: relative;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.12s ease, outline 0.12s ease;
+    }
+
+    .cell:hover {
+      z-index: 5;
+      outline: 3px solid rgba(18, 48, 82, 0.8);
+      transform: scale(1.03);
+    }
+
+    .cell.normal {
+      background: #e7edf3;
+    }
+
+    .cell.corridor,
+    .cell.outlet {
+      background:
+        linear-gradient(90deg, rgba(122, 199, 238, 0.45), rgba(191, 231, 255, 0.82), rgba(122, 199, 238, 0.45)),
+        #dcecf8;
+    }
+
+    .cell.residential {
+      background: #ffd39f;
+    }
+
+    .cell.basin {
+      background: #cfe9c5;
+    }
+
+    .terrain-mark {
+      opacity: 0.42;
+      color: rgba(92, 116, 138, 0.8);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .cell.outlet .terrain-mark {
+      color: #0e7bc7;
+      opacity: 0.86;
+      font-size: 18px;
+    }
+
+    .placed {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 8px;
+      color: #fff;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+    }
+
+    .placed.coal {
+      background: var(--red);
+    }
+
+    .placed.wind {
+      background: var(--blue);
+    }
+
+    .placed.heatPump {
+      background: var(--green);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 16px 0 0;
+      padding: 10px;
+      border: 1px solid #d8e4ef;
+      border-radius: 12px;
+      background: #fff;
+      color: #526579;
+      font-size: 12px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 20px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(18, 48, 82, 0.12);
+    }
+
+    .metric-card {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin: 10px 0;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .metric-card.temp {
+      border-color: #ffc98f;
+      background: var(--orange-soft);
+    }
+
+    .metric-card.wind {
+      border-color: #a7d8fb;
+      background: #edf8ff;
+    }
+
+    .metric-card.carbon {
+      border-color: #bde5c9;
+      background: var(--green-soft);
+    }
+
+    .metric-icon {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.8);
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    .metric-label {
+      color: #31506d;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .metric-value {
+      margin-top: 5px;
+      font-size: 31px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .metric-value small {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .metric-card.temp .metric-value {
+      color: #df5b18;
+    }
+
+    .metric-card.wind .metric-value {
+      color: #146ec2;
+    }
+
+    .metric-card.carbon .metric-value {
+      color: #168045;
+    }
+
+    .pill {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.75);
+      color: #607287;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .action-btn {
+      width: 100%;
+      border: 1px solid #d5e1ec;
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(30, 75, 115, 0.06);
+    }
+
+    .action-btn.primary {
+      border-color: #1f9b55;
+      background: linear-gradient(180deg, #28b966, #1f974f);
+      color: #fff;
+    }
+
+    .tip {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px solid #cfe0ee;
+      border-radius: 12px;
+      background: #f8fbff;
+      color: #526579;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .result {
+      margin-top: 10px;
+      color: #607287;
+      font-size: 12px;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(10, 24, 40, 0.62);
+    }
+
+    .modal.hidden {
+      display: none;
+    }
+
+    .dialog {
+      width: min(520px, 100%);
+      padding: 24px;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
+    }
+
+    .dialog h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      color: var(--ink);
+    }
+
+    .question {
+      margin: 16px 0;
+      color: #1b354f;
+      font-size: 14px;
+    }
+
+    .question strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .question label {
+      display: block;
+      margin: 6px 0;
+      color: #526579;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .guide-dialog {
+      width: min(680px, 100%);
+      padding: 26px;
+    }
+
+    .guide-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #146ec2;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .guide-steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .guide-step {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid #d8e4ef;
+      border-radius: 14px;
+      background: #f8fbff;
+    }
+
+    .guide-step-number {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #2da8f5, #146ec2);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .guide-step strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ink);
+      font-size: 15px;
+    }
+
+    .guide-step p {
+      margin: 0;
+      color: #526579;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .budget-strip {
+        position: static;
+        width: fit-content;
+        margin-top: 12px;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .guide-steps {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
-  <header><div><h1>&#x5E02;&#x957F;&#x6A21;&#x62DF; MVP</h1><p>&#x7528; 1000 &#x4E07;&#x9884;&#x7B97;&#x5E03;&#x5C40;&#x80FD;&#x6E90;&#x8BBE;&#x65BD;&#xFF0C;&#x89C2;&#x5BDF;&#x57CE;&#x5E02;&#x6E29;&#x5EA6;&#x3001;&#x901A;&#x98CE;&#x548C;&#x78B3;&#x6392;&#x7684;&#x5373;&#x65F6;&#x53D8;&#x5316;&#x3002;</p></div><div class="top-actions"><span>&#x5269;&#x4F59;&#x9884;&#x7B97;&#xFF1A;<strong id="budget">1000</strong> &#x4E07;</span><button class="primary" id="finish">&#x7ED3;&#x7B97;</button><button id="reset">&#x91CD;&#x7F6E;</button></div></header>
-  <main class="shell"><aside class="panel"><h2>1. &#x9009;&#x62E9;&#x8BBE;&#x65BD;</h2><p class="hint">&#x70B9;&#x51FB;&#x4E00;&#x4E2A;&#x8BBE;&#x65BD;&#xFF0C;&#x518D;&#x70B9;&#x51FB;&#x5730;&#x56FE;&#x683C;&#x5B50;&#x653E;&#x7F6E;&#x3002;&#x518D;&#x6B21;&#x70B9;&#x51FB;&#x5DF2;&#x653E;&#x7F6E;&#x683C;&#x5B50;&#x53EF;&#x4EE5;&#x64A4;&#x9500;&#x5E76;&#x8FD4;&#x8FD8;&#x9884;&#x7B97;&#x3002;</p><div id="facility-list"></div></aside><section class="panel"><h2>2. &#x57CE;&#x5E02;&#x5730;&#x56FE;</h2><p class="hint">&#x84DD;&#x8272;&#x533A;&#x57DF;&#x662F;&#x901A;&#x98CE;&#x5ECA;&#x9053;&#x548C;&#x98CE;&#x53E3;&#xFF0C;&#x6A59;&#x8272;&#x662F;&#x5C45;&#x6C11;&#x533A;&#xFF0C;&#x7EFF;&#x8272;&#x662F;&#x4F4E;&#x6D3C;&#x76C6;&#x5730;&#x3002;</p><div class="map" id="map"></div><div class="legend" id="legend"></div></section><aside class="panel"><h2>3. &#x5B9E;&#x65F6;&#x6307;&#x6807;</h2><div class="metric"><div class="metric-label">&#x5E73;&#x5747;&#x6E29;&#x5EA6;</div><div class="metric-value" id="temp">25.0&deg;C</div></div><div class="metric"><div class="metric-label">&#x5E73;&#x5747;&#x98CE;&#x901F;</div><div class="metric-value" id="wind">2.00 m/s</div></div><div class="metric"><div class="metric-label">&#x78B3;&#x6392;&#x653E;</div><div class="metric-value" id="carbon">0 t</div></div><div class="tip" id="tip">&#x5148;&#x653E;&#x7F6E;&#x8BBE;&#x65BD;&#xFF0C;&#x7CFB;&#x7EDF;&#x4F1A;&#x7528;&#x7B80;&#x5316;&#x89C4;&#x5219;&#x5B9E;&#x65F6;&#x66F4;&#x65B0;&#x6307;&#x6807;&#x3002;</div><div class="result" id="result">&#x5B8C;&#x6210;&#x5E03;&#x5C40;&#x540E;&#x70B9;&#x51FB;&#x201C;&#x7ED3;&#x7B97;&#x201D;&#xFF0C;&#x586B;&#x5199; 2 &#x9898;&#x53CD;&#x9988;&#x5E76;&#x4E0B;&#x8F7D; JSON &#x6570;&#x636E;&#x3002;</div></aside></main>
-  <div class="modal hidden" id="modal"><div class="dialog"><h2>&#x53CD;&#x9988;&#x95EE;&#x5377;</h2><p class="hint">&#x6570;&#x636E;&#x53EA;&#x4F1A;&#x4E0B;&#x8F7D;&#x5230;&#x672C;&#x673A;&#xFF0C;&#x4E0D;&#x4F1A;&#x4E0A;&#x4F20;&#x670D;&#x52A1;&#x5668;&#x3002;</p><form id="survey"><div class="question"><strong>1. &#x4F60;&#x662F;&#x5426;&#x66FE;&#x4E3A;&#x4E86;&#x8282;&#x7701;&#x9884;&#x7B97;&#x800C;&#x9009;&#x62E9;&#x7164;&#x7535;&#xFF1F;</strong><label><input type="radio" name="budgetChoice" value="yes" required> &#x662F;</label><label><input type="radio" name="budgetChoice" value="no"> &#x5426;</label></div><div class="question"><strong>2. &#x5728;&#x98CE;&#x53E3;&#x653E;&#x7F6E;&#x7164;&#x7535;&#x4F1A;&#x964D;&#x4F4E;&#x5168;&#x57CE;&#x901A;&#x98CE;&#x3002;</strong><label><input type="radio" name="windUnderstanding" value="true" required> &#x6B63;&#x786E;</label><label><input type="radio" name="windUnderstanding" value="false"> &#x9519;&#x8BEF;</label></div></form><div class="dialog-actions"><button id="close-modal">&#x8FD4;&#x56DE;&#x4FEE;&#x6539;</button><button class="primary" id="download">&#x63D0;&#x4EA4;&#x5E76;&#x4E0B;&#x8F7D; JSON</button></div></div></div>
+  <div class="page">
+    <header class="hero">
+      <div class="brand">
+        <div class="planet" aria-hidden="true"></div>
+        <div>
+          <h1>市长气候模拟游戏</h1>
+          <p class="subtitle">在有限预算下布局能源设施，观察城市微气候、通风和碳排放的变化。</p>
+        </div>
+      </div>
+      <div class="budget-strip">
+        剩余预算
+        <strong id="budget">1000</strong>
+        <span>万元</span>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <aside class="panel side-panel">
+        <h2 class="panel-title"><span class="title-icon">设</span>选择设施</h2>
+        <p class="helper">先选择一种设施，再点击城市地图放置。点击已放置的设施可以撤销。</p>
+        <div id="facility-list"></div>
+        <div class="how-card">
+          <strong>玩法说明</strong>
+          在地图上放置设施，尝试改善城市温度、通风和碳排。完成后点击结算查看结果。
+          <button class="guide-button" id="open-guide" type="button">查看新手引导</button>
+        </div>
+      </aside>
+
+      <section class="panel map-panel">
+        <div class="map-head">
+          <div>
+            <h2 class="panel-title"><span class="title-icon">图</span>城市地图</h2>
+            <p class="helper">蓝色是通风廊道和风口，橙色是居民区，绿色是低洼盆地。</p>
+          </div>
+          <div class="grid-note">网格：12 x 12</div>
+        </div>
+
+        <div class="map-wrap">
+          <div class="axis" id="col-axis"></div>
+          <div class="map-row">
+            <div class="row-numbers" id="row-axis"></div>
+            <div class="map" id="map"></div>
+          </div>
+          <div class="legend" id="legend"></div>
+        </div>
+      </section>
+
+      <aside class="panel side-panel">
+        <h2 class="panel-title"><span class="title-icon">数</span>实时指标</h2>
+        <p class="helper">实时观察你的城市表现。</p>
+
+        <div class="metric-card temp">
+          <div class="metric-icon">温</div>
+          <div>
+            <div class="metric-label">平均温度</div>
+            <div class="metric-value" id="temp">25.0<small> °C</small></div>
+            <span class="pill" id="temp-status">稳定</span>
+          </div>
+        </div>
+
+        <div class="metric-card wind">
+          <div class="metric-icon">风</div>
+          <div>
+            <div class="metric-label">平均风速</div>
+            <div class="metric-value" id="wind">2.00<small> m/s</small></div>
+            <span class="pill" id="wind-status">良好</span>
+          </div>
+        </div>
+
+        <div class="metric-card carbon">
+          <div class="metric-icon">碳</div>
+          <div>
+            <div class="metric-label">碳排放</div>
+            <div class="metric-value" id="carbon">0<small> t</small></div>
+            <span class="pill" id="carbon-status">低</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="action-btn primary" id="finish">结算</button>
+          <button class="action-btn" id="reset">重置</button>
+        </div>
+
+        <div class="tip" id="tip">选择一种设施开始。放置后，仿真指标会立即更新。</div>
+        <div class="result" id="result">点击结算查看评分，并下载本地 JSON 数据。</div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="modal guide-modal hidden" id="guide-modal">
+    <div class="dialog guide-dialog">
+      <span class="guide-kicker">新手引导 · 约 30 秒</span>
+      <h2>欢迎来到市长气候模拟游戏</h2>
+      <p class="helper">你的目标是在 1000 万元预算内布局能源设施，并观察城市温度、通风和碳排放如何变化。</p>
+
+      <div class="guide-steps">
+        <div class="guide-step">
+          <span class="guide-step-number">1</span>
+          <div>
+            <strong>先选一种设施</strong>
+            <p>左侧有煤电、风电和地源热泵。它们的成本、碳排和降温效果不同。</p>
+          </div>
+        </div>
+        <div class="guide-step">
+          <span class="guide-step-number">2</span>
+          <div>
+            <strong>再点击地图格子</strong>
+            <p>蓝色是通风廊道和风口，橙色是居民区，绿色是低洼盆地。点击已放置设施可以撤销。</p>
+          </div>
+        </div>
+        <div class="guide-step">
+          <span class="guide-step-number">3</span>
+          <div>
+            <strong>观察右侧指标</strong>
+            <p>平均温度、平均风速和碳排放会实时更新。注意：煤电放在风口会阻碍通风。</p>
+          </div>
+        </div>
+        <div class="guide-step">
+          <span class="guide-step-number">4</span>
+          <div>
+            <strong>完成后结算</strong>
+            <p>点击“结算”，填写 2 题反馈问卷，然后下载本局 JSON 数据。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-actions">
+        <button class="action-btn" id="skip-guide" type="button">稍后再看</button>
+        <button class="action-btn primary" id="start-guide" type="button">开始游戏</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="modal">
+    <div class="dialog">
+      <h2>反馈问卷</h2>
+      <p class="helper">数据只会下载到你的电脑，不会上传到服务器。</p>
+      <form id="survey">
+        <div class="question">
+          <strong>1. 你是否为了节省预算而选择煤电？</strong>
+          <label><input type="radio" name="budgetChoice" value="yes" required> 是</label>
+          <label><input type="radio" name="budgetChoice" value="no"> 否</label>
+        </div>
+        <div class="question">
+          <strong>2. 在风口放置煤电会降低全城通风。</strong>
+          <label><input type="radio" name="windUnderstanding" value="true" required> 正确</label>
+          <label><input type="radio" name="windUnderstanding" value="false"> 错误</label>
+        </div>
+      </form>
+      <div class="dialog-actions">
+        <button class="action-btn" id="close-modal">返回修改</button>
+        <button class="action-btn primary" id="download">提交并下载 JSON</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const terrains={normal:{name:'\u666e\u901a\u533a',color:'#e7edf2',wind:1},corridor:{name:'\u901a\u98ce\u5eca\u9053',color:'#b8e0f0',wind:1.4},outlet:{name:'\u98ce\u53e3',color:'#7ec8e3',wind:1.6},residential:{name:'\u5c45\u6c11\u533a',color:'#ffe6c7',wind:.95},basin:{name:'\u4f4e\u6d3c\u76c6\u5730',color:'#c8e6c9',wind:.85}};
-    const facilities={coal:{name:'\u7164\u7535',label:'\u7164',cost:80,carbon:120,heat:4.5,windBlock:.6,color:'#5d4037'},wind:{name:'\u98ce\u7535',label:'\u98ce',cost:200,carbon:0,heat:-.8,windBlock:0,color:'#0277bd'},heatPump:{name:'\u5730\u6e90\u70ed\u6cf5',label:'\u6cf5',cost:160,carbon:15,heat:-1.5,windBlock:0,color:'#2e7d32'}};
-    const mapData=[['normal','normal','corridor','corridor','corridor','outlet','normal','normal','normal','normal','normal','normal'],['normal','residential','residential','corridor','corridor','corridor','outlet','normal','normal','normal','normal','normal'],['normal','residential','residential','residential','corridor','corridor','corridor','outlet','normal','normal','normal','normal'],['normal','residential','residential','residential','residential','corridor','corridor','corridor','normal','normal','normal','normal'],['normal','normal','residential','residential','residential','residential','corridor','corridor','corridor','normal','normal','normal'],['normal','normal','normal','basin','basin','residential','residential','corridor','corridor','outlet','normal','normal'],['normal','normal','basin','basin','basin','basin','residential','residential','corridor','corridor','normal','normal'],['normal','normal','basin','basin','basin','basin','basin','residential','residential','corridor','normal','normal'],['normal','normal','normal','basin','basin','basin','residential','residential','residential','normal','normal','normal'],['normal','normal','normal','normal','normal','residential','residential','residential','normal','normal','normal','normal'],['normal','normal','normal','normal','normal','normal','normal','normal','normal','normal','normal','normal'],['normal','normal','normal','normal','normal','normal','normal','normal','normal','normal','normal','normal']];
-    const state={selected:null,budget:1000,placements:mapData.map(row=>row.map(()=>null)),metrics:{temp:25,wind:2,carbon:0}};const $=s=>document.querySelector(s);
-    function renderFacilities(){ $('#facility-list').innerHTML=Object.entries(facilities).map(([k,f])=>`<button class="facility" data-facility="${k}"><span class="mark" style="background:${f.color}">${f.label}</span><span><strong>${f.name}</strong><br><small>${f.cost} \u4e07</small></span><small>${f.carbon} t</small></button>`).join('');document.querySelectorAll('.facility').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.facility;if(state.budget<facilities[k].cost)return;state.selected=k;updateFacilityStates()}));}
-    function updateFacilityStates(){document.querySelectorAll('.facility').forEach(b=>{const k=b.dataset.facility;b.classList.toggle('selected',state.selected===k);b.classList.toggle('disabled',state.budget<facilities[k].cost)})}
-    function renderMap(){const map=$('#map');map.innerHTML='';mapData.forEach((row,y)=>row.forEach((terrainKey,x)=>{const cell=document.createElement('div');const facilityKey=state.placements[y][x];const terrain=terrains[terrainKey];cell.className='cell';cell.style.background=terrain.color;cell.title=`${terrain.name} (${x+1}, ${y+1})`;if(facilityKey){const f=facilities[facilityKey];cell.textContent=f.label;cell.style.background=f.color;cell.title+=` - ${f.name}`}cell.addEventListener('click',()=>{if(state.placements[y][x])removePlacement(x,y);else if(!state.selected)$('#tip').textContent='\u8bf7\u5148\u5728\u5de6\u4fa7\u9009\u62e9\u4e00\u4e2a\u8bbe\u65bd\u3002';else placeFacility(x,y,state.selected)});map.appendChild(cell)}))}
-    function renderLegend(){ $('#legend').innerHTML=Object.values(terrains).map(t=>`<span class="legend-item"><span class="swatch" style="background:${t.color}"></span>${t.name}</span>`).join('')}
-    function placeFacility(x,y,key){const f=facilities[key];if(state.budget<f.cost){$('#tip').textContent='\u9884\u7b97\u4e0d\u8db3\uff0c\u65e0\u6cd5\u653e\u7f6e\u8be5\u8bbe\u65bd\u3002';return}state.placements[y][x]=key;state.budget-=f.cost;updateAll()}
-    function removePlacement(x,y){const key=state.placements[y][x];if(!key)return;state.placements[y][x]=null;state.budget+=facilities[key].cost;updateAll()}
-    function calculateMetrics(){let totalTemp=0,totalWind=0,totalCarbon=0,cells=0,cityWindPenalty=1;mapData.forEach((row,y)=>row.forEach((terrainKey,x)=>{const terrain=terrains[terrainKey];const facilityKey=state.placements[y][x];let temp=25,wind=2*terrain.wind;if(facilityKey){const f=facilities[facilityKey];let heat=f.heat;if(facilityKey==='wind'&&(terrainKey==='corridor'||terrainKey==='outlet')){heat*=1.4;wind*=1.3}if(facilityKey==='heatPump'&&terrainKey==='basin')heat*=1.5;if(facilityKey==='coal'&&terrainKey==='outlet')cityWindPenalty*=.72;temp+=heat;wind*=1-f.windBlock;totalCarbon+=f.carbon}totalTemp+=temp;totalWind+=Math.max(.1,wind*cityWindPenalty);cells++}));state.metrics={temp:Number((totalTemp/cells).toFixed(1)),wind:Number((totalWind/cells).toFixed(2)),carbon:totalCarbon}}
-    function updateMetrics(){$('#budget').textContent=state.budget;$('#temp').textContent=`${state.metrics.temp.toFixed(1)}\u00b0C`;$('#wind').textContent=`${state.metrics.wind.toFixed(2)} m/s`;$('#carbon').textContent=`${state.metrics.carbon} t`;$('#result').innerHTML=`\u5df2\u4f7f\u7528\u9884\u7b97\uff1a<strong>${1000-state.budget}</strong> \u4e07<br>\u5df2\u653e\u7f6e\u8bbe\u65bd\uff1a<strong>${getLayout().length}</strong> \u4e2a`;$('#tip').textContent=getTip()}
-    function getTip(){let coalOutlet=false,heatBasin=false,windCorridor=false;mapData.forEach((row,y)=>row.forEach((terrainKey,x)=>{const f=state.placements[y][x];coalOutlet ||= f==='coal'&&terrainKey==='outlet';heatBasin ||= f==='heatPump'&&terrainKey==='basin';windCorridor ||= f==='wind'&&(terrainKey==='corridor'||terrainKey==='outlet')}));if(coalOutlet)return'\u63d0\u793a\uff1a\u7164\u7535\u653e\u5728\u98ce\u53e3\u4f1a\u963b\u788d\u5168\u57ce\u901a\u98ce\uff0c\u5e73\u5747\u98ce\u901f\u4f1a\u660e\u663e\u4e0b\u964d\u3002';if(heatBasin)return'\u4e0d\u9519\uff1a\u5730\u6e90\u70ed\u6cf5\u653e\u5728\u4f4e\u6d3c\u76c6\u5730\u65f6\uff0c\u964d\u6e29\u6548\u679c\u66f4\u5f3a\u3002';if(windCorridor)return'\u4e0d\u9519\uff1a\u98ce\u7535\u653e\u5728\u901a\u98ce\u5eca\u9053\u6216\u98ce\u53e3\u65f6\uff0c\u53ef\u4ee5\u5f3a\u5316\u6e05\u6d01\u80fd\u6e90\u548c\u901a\u98ce\u6548\u679c\u3002';if(!getLayout().length)return'\u5148\u653e\u7f6e\u8bbe\u65bd\uff0c\u7cfb\u7edf\u4f1a\u7528\u7b80\u5316\u89c4\u5219\u5b9e\u65f6\u66f4\u65b0\u6307\u6807\u3002';return'\u7ee7\u7eed\u8c03\u6574\u5e03\u5c40\uff0c\u6bd4\u8f83\u9884\u7b97\u3001\u78b3\u6392\u3001\u6e29\u5ea6\u548c\u901a\u98ce\u4e4b\u95f4\u7684\u53d6\u820d\u3002'}
-    function getLayout(){const layout=[];state.placements.forEach((row,y)=>row.forEach((facility,x)=>{if(facility)layout.push({x,y,terrain:mapData[y][x],facility})}));return layout}
-    function getScore(){const carbonScore=Math.max(0,100-state.metrics.carbon/12),tempScore=Math.max(0,100-Math.abs(state.metrics.temp-24)*12),windScore=Math.min(100,state.metrics.wind*35);return Math.round((carbonScore+tempScore+windScore)/3)}
-    function updateAll(){calculateMetrics();renderMap();updateMetrics();updateFacilityStates()}
-    function downloadResult(){const form=$('#survey');if(!form.reportValidity())return;const survey=Object.fromEntries(new FormData(form).entries());const data={project:'mayor-climate-mvp',timestamp:new Date().toISOString(),budgetUsed:1000-state.budget,score:getScore(),metrics:state.metrics,layout:getLayout(),survey};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='mayor-climate-mvp-result.json';link.click();URL.revokeObjectURL(link.href);$('#modal').classList.add('hidden')}
-    $('#finish').addEventListener('click',()=>{calculateMetrics();$('#result').innerHTML=`\u672c\u5c40\u8bc4\u5206\uff1a<strong>${getScore()}</strong> \u5206<br>\u586b\u5199\u53cd\u9988\u540e\u53ef\u4e0b\u8f7d\u672c\u5c40 JSON \u6570\u636e\u3002`;$('#modal').classList.remove('hidden')});$('#reset').addEventListener('click',()=>{state.selected=null;state.budget=1000;state.placements=mapData.map(row=>row.map(()=>null));updateAll()});$('#close-modal').addEventListener('click',()=>$('#modal').classList.add('hidden'));$('#download').addEventListener('click',downloadResult);renderFacilities();renderLegend();updateAll();
+    const terrains = {
+      normal: { name: "普通区", color: "#e7edf3", wind: 1, mark: "" },
+      corridor: { name: "通风廊道", color: "#dff2ff", wind: 1.4, mark: ">" },
+      outlet: { name: "风口", color: "#bfe7ff", wind: 1.6, mark: "~" },
+      residential: { name: "居民区", color: "#ffd39f", wind: 0.95, mark: "H" },
+      basin: { name: "低洼盆地", color: "#cfe9c5", wind: 0.85, mark: "." }
+    };
+
+    const facilities = {
+      coal: {
+        name: "煤电",
+        label: "煤",
+        cost: 80,
+        carbon: 120,
+        heat: 4.5,
+        windBlock: 0.6,
+        color: "#df4a35",
+        note: "成本低、排放高，提供稳定电力"
+      },
+      wind: {
+        name: "风电",
+        label: "风",
+        cost: 200,
+        carbon: 0,
+        heat: -0.8,
+        windBlock: 0,
+        color: "#1688d9",
+        note: "清洁能源，放在风道效果更好"
+      },
+      heatPump: {
+        name: "地源热泵",
+        label: "泵",
+        cost: 160,
+        carbon: 15,
+        heat: -1.5,
+        windBlock: 0,
+        color: "#229953",
+        note: "高效供冷供热，低排放"
+      }
+    };
+
+    const mapData = [
+      ["normal","normal","corridor","corridor","corridor","outlet","normal","normal","normal","normal","normal","normal"],
+      ["normal","residential","residential","corridor","corridor","corridor","outlet","normal","normal","normal","normal","normal"],
+      ["normal","residential","residential","residential","corridor","corridor","corridor","outlet","normal","normal","normal","normal"],
+      ["normal","residential","residential","residential","residential","corridor","corridor","corridor","normal","normal","normal","normal"],
+      ["normal","normal","residential","residential","residential","residential","corridor","corridor","corridor","normal","normal","normal"],
+      ["normal","normal","normal","basin","basin","residential","residential","corridor","corridor","outlet","normal","normal"],
+      ["normal","normal","basin","basin","basin","basin","residential","residential","corridor","corridor","normal","normal"],
+      ["normal","normal","basin","basin","basin","basin","basin","residential","residential","corridor","normal","normal"],
+      ["normal","normal","normal","basin","basin","basin","residential","residential","residential","normal","normal","normal"],
+      ["normal","normal","normal","normal","normal","residential","residential","residential","normal","normal","normal","normal"],
+      ["normal","normal","normal","normal","normal","normal","normal","normal","normal","normal","normal","normal"],
+      ["normal","normal","normal","normal","normal","normal","normal","normal","normal","normal","normal","normal"]
+    ];
+
+    const state = {
+      selected: null,
+      budget: 1000,
+      placements: mapData.map(row => row.map(() => null)),
+      metrics: { temp: 25, wind: 2, carbon: 0 }
+    };
+
+    const $ = selector => document.querySelector(selector);
+
+    function renderFacilities() {
+      $("#facility-list").innerHTML = Object.entries(facilities).map(([key, facility]) => `
+        <button class="facility ${key}" data-facility="${key}">
+          <span class="facility-icon ${key}">${facility.label}</span>
+          <span>
+            <span class="facility-name">${facility.name}</span>
+            <span class="facility-meta">${facility.cost} 万元 / ${facility.carbon} 吨 CO2e</span>
+            <span class="facility-note">${facility.note}</span>
+          </span>
+        </button>
+      `).join("");
+
+      document.querySelectorAll(".facility").forEach(button => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.facility;
+          if (state.budget < facilities[key].cost) return;
+          state.selected = key;
+          updateFacilityStates();
+        });
+      });
+    }
+
+    function renderAxes() {
+      $("#col-axis").innerHTML = "<span></span>" + Array.from({ length: 12 }, (_, i) => `<span>${i + 1}</span>`).join("");
+      $("#row-axis").innerHTML = Array.from({ length: 12 }, (_, i) => `<span>${i + 1}</span>`).join("");
+    }
+
+    function updateFacilityStates() {
+      document.querySelectorAll(".facility").forEach(button => {
+        const key = button.dataset.facility;
+        button.classList.toggle("selected", state.selected === key);
+        button.classList.toggle("disabled", state.budget < facilities[key].cost);
+      });
+    }
+
+    function renderMap() {
+      const map = $("#map");
+      map.innerHTML = "";
+
+      mapData.forEach((row, y) => {
+        row.forEach((terrainKey, x) => {
+          const terrain = terrains[terrainKey];
+          const facilityKey = state.placements[y][x];
+          const cell = document.createElement("div");
+          cell.className = `cell ${terrainKey}`;
+          cell.title = `${terrain.name} (${x + 1}, ${y + 1})`;
+
+          if (facilityKey) {
+            const facility = facilities[facilityKey];
+            cell.innerHTML = `<span class="placed ${facilityKey}">${facility.label}</span>`;
+            cell.title += ` - ${facility.name}`;
+          } else {
+            cell.innerHTML = `<span class="terrain-mark">${terrain.mark}</span>`;
+          }
+
+          cell.addEventListener("click", () => {
+            if (state.placements[y][x]) {
+              removePlacement(x, y);
+            } else if (!state.selected) {
+              $("#tip").textContent = "请先在左侧选择一种设施。";
+            } else {
+              placeFacility(x, y, state.selected);
+            }
+          });
+
+          map.appendChild(cell);
+        });
+      });
+    }
+
+    function renderLegend() {
+      $("#legend").innerHTML = Object.values(terrains).map(terrain => `
+        <span class="legend-item">
+          <span class="swatch" style="background:${terrain.color}"></span>${terrain.name}
+        </span>
+      `).join("");
+    }
+
+    function placeFacility(x, y, key) {
+      const facility = facilities[key];
+      if (state.budget < facility.cost) {
+        $("#tip").textContent = "预算不足，无法放置该设施。";
+        return;
+      }
+
+      state.placements[y][x] = key;
+      state.budget -= facility.cost;
+      updateAll();
+    }
+
+    function removePlacement(x, y) {
+      const key = state.placements[y][x];
+      if (!key) return;
+      state.placements[y][x] = null;
+      state.budget += facilities[key].cost;
+      updateAll();
+    }
+
+    function calculateMetrics() {
+      let totalTemp = 0;
+      let totalWind = 0;
+      let totalCarbon = 0;
+      let cells = 0;
+      let cityWindPenalty = 1;
+
+      mapData.forEach((row, y) => {
+        row.forEach((terrainKey, x) => {
+          const terrain = terrains[terrainKey];
+          const facilityKey = state.placements[y][x];
+          let temp = 25;
+          let wind = 2 * terrain.wind;
+
+          if (facilityKey) {
+            const facility = facilities[facilityKey];
+            let heat = facility.heat;
+
+            if (facilityKey === "wind" && (terrainKey === "corridor" || terrainKey === "outlet")) {
+              heat *= 1.4;
+              wind *= 1.3;
+            }
+
+            if (facilityKey === "heatPump" && terrainKey === "basin") heat *= 1.5;
+            if (facilityKey === "coal" && terrainKey === "outlet") cityWindPenalty *= 0.72;
+
+            temp += heat;
+            wind *= (1 - facility.windBlock);
+            totalCarbon += facility.carbon;
+          }
+
+          totalTemp += temp;
+          totalWind += Math.max(0.1, wind * cityWindPenalty);
+          cells += 1;
+        });
+      });
+
+      state.metrics = {
+        temp: Number((totalTemp / cells).toFixed(1)),
+        wind: Number((totalWind / cells).toFixed(2)),
+        carbon: totalCarbon
+      };
+    }
+
+    function updateMetrics() {
+      $("#budget").textContent = state.budget;
+      $("#temp").innerHTML = `${state.metrics.temp.toFixed(1)}<small> °C</small>`;
+      $("#wind").innerHTML = `${state.metrics.wind.toFixed(2)}<small> m/s</small>`;
+      $("#carbon").innerHTML = `${state.metrics.carbon}<small> t</small>`;
+
+      $("#temp-status").textContent = state.metrics.temp > 26 ? "偏热" : state.metrics.temp < 24.8 ? "降温中" : "稳定";
+      $("#wind-status").textContent = state.metrics.wind < 1.8 ? "受阻" : state.metrics.wind > 2.3 ? "强" : "良好";
+      $("#carbon-status").textContent = state.metrics.carbon > 400 ? "高" : state.metrics.carbon > 120 ? "中等" : "低";
+
+      $("#result").innerHTML = `已使用预算：<strong>${1000 - state.budget}</strong> 万元<br>已放置设施：<strong>${getLayout().length}</strong> 个`;
+      $("#tip").textContent = getTip();
+    }
+
+    function getTip() {
+      let coalOutlet = false;
+      let heatBasin = false;
+      let windCorridor = false;
+
+      mapData.forEach((row, y) => {
+        row.forEach((terrainKey, x) => {
+          const facilityKey = state.placements[y][x];
+          coalOutlet ||= facilityKey === "coal" && terrainKey === "outlet";
+          heatBasin ||= facilityKey === "heatPump" && terrainKey === "basin";
+          windCorridor ||= facilityKey === "wind" && (terrainKey === "corridor" || terrainKey === "outlet");
+        });
+      });
+
+      if (coalOutlet) return "警告：煤电放在风口会阻碍通风，降低全城平均风速。";
+      if (heatBasin) return "不错：在这个简化模型中，地源热泵放在低洼盆地时降温效果更好。";
+      if (windCorridor) return "不错：风电放在通风廊道或风口时表现更好。";
+      if (!getLayout().length) return "选择一种设施开始。放置后，仿真指标会立即更新。";
+      return "继续比较成本、碳排、温度和通风，再决定是否结算。";
+    }
+
+    function getLayout() {
+      const layout = [];
+      state.placements.forEach((row, y) => {
+        row.forEach((facility, x) => {
+          if (facility) layout.push({ x, y, terrain: mapData[y][x], facility });
+        });
+      });
+      return layout;
+    }
+
+    function getScore() {
+      const carbonScore = Math.max(0, 100 - state.metrics.carbon / 12);
+      const tempScore = Math.max(0, 100 - Math.abs(state.metrics.temp - 24) * 12);
+      const windScore = Math.min(100, state.metrics.wind * 35);
+      return Math.round((carbonScore + tempScore + windScore) / 3);
+    }
+
+    function updateAll() {
+      calculateMetrics();
+      renderMap();
+      updateMetrics();
+      updateFacilityStates();
+    }
+
+    function openGuide() {
+      $("#guide-modal").classList.remove("hidden");
+    }
+
+    function closeGuide() {
+      $("#guide-modal").classList.add("hidden");
+      localStorage.setItem("mayorClimateGuideSeen", "true");
+    }
+
+    function downloadResult() {
+      const form = $("#survey");
+      if (!form.reportValidity()) return;
+
+      const survey = Object.fromEntries(new FormData(form).entries());
+      const data = {
+        project: "市长气候模拟游戏",
+        timestamp: new Date().toISOString(),
+        budgetUsed: 1000 - state.budget,
+        score: getScore(),
+        metrics: state.metrics,
+        layout: getLayout(),
+        survey
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "市长气候模拟游戏-结果.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+      $("#modal").classList.add("hidden");
+    }
+
+    $("#finish").addEventListener("click", () => {
+      calculateMetrics();
+      $("#result").innerHTML = `本局评分：<strong>${getScore()}</strong><br>提交反馈后可下载本地 JSON 数据。`;
+      $("#modal").classList.remove("hidden");
+    });
+
+    $("#reset").addEventListener("click", () => {
+      state.selected = null;
+      state.budget = 1000;
+      state.placements = mapData.map(row => row.map(() => null));
+      updateAll();
+    });
+
+    $("#close-modal").addEventListener("click", () => $("#modal").classList.add("hidden"));
+    $("#download").addEventListener("click", downloadResult);
+    $("#open-guide").addEventListener("click", openGuide);
+    $("#skip-guide").addEventListener("click", closeGuide);
+    $("#start-guide").addEventListener("click", closeGuide);
+
+    renderFacilities();
+    renderAxes();
+    renderLegend();
+    updateAll();
+
+    if (localStorage.getItem("mayorClimateGuideSeen") !== "true") {
+      openGuide();
+    }
   </script>
 </body>
 </html>
