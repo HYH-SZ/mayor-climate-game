@@ -1233,7 +1233,7 @@
     }
 
     function classifyChange(kind, delta) {
-      if (delta === 0) return { label: "中性", className: "flat", score: 0 };
+      if (delta === 0) return { impactLabel: "中性", className: "flat", score: 0 };
       const goodWhenPositive = kind === "wind" || kind === "budget";
       const isGood = goodWhenPositive ? delta > 0 : delta < 0;
       return {
