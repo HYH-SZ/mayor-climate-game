@@ -120,28 +120,6 @@
       line-height: 1.5;
     }
 
-    .budget-strip {
-      position: absolute;
-      z-index: 1;
-      right: 28px;
-      top: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border: 1px solid rgba(45, 106, 159, 0.18);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.85);
-      color: var(--muted);
-      font-size: 14px;
-      backdrop-filter: blur(10px);
-    }
-
-    .budget-strip strong {
-      color: var(--ink);
-      font-size: 20px;
-    }
-
     .dashboard {
       display: grid;
       grid-template-columns: 250px minmax(520px, 1fr) 260px;
@@ -185,6 +163,49 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
+    }
+
+    .budget-card {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin: 0 0 14px;
+      padding: 12px;
+      border: 1px solid #a7d8fb;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #eff9ff, #e6f3ff);
+      box-shadow: 0 8px 18px rgba(22, 136, 217, 0.12);
+    }
+
+    .budget-icon {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #fff;
+      color: #146ec2;
+      font-weight: 900;
+    }
+
+    .budget-label {
+      display: block;
+      color: #526579;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .budget-value {
+      color: var(--ink);
+      font-size: 25px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .budget-value small {
+      font-size: 12px;
+      color: #607287;
     }
 
     .facility {
@@ -813,12 +834,6 @@
         grid-template-columns: 1fr;
       }
 
-      .budget-strip {
-        position: static;
-        width: fit-content;
-        margin-top: 12px;
-      }
-
       .brand {
         align-items: flex-start;
       }
@@ -839,17 +854,19 @@
           <p class="subtitle">在有限预算下布局能源设施，观察城市微气候、通风和碳排放的变化。</p>
         </div>
       </div>
-      <div class="budget-strip">
-        剩余预算
-        <strong id="budget">1000</strong>
-        <span>万元</span>
-      </div>
     </header>
 
     <main class="dashboard">
       <aside class="panel side-panel">
         <h2 class="panel-title"><span class="title-icon">设</span>选择设施</h2>
         <p class="helper">先选择一种设施，再点击城市地图放置。点击已放置的设施可以撤销。</p>
+        <div class="budget-card">
+          <span class="budget-icon">预</span>
+          <span>
+            <span class="budget-label">剩余预算</span>
+            <span class="budget-value"><span id="budget">1000</span><small> 万元</small></span>
+          </span>
+        </div>
         <div id="facility-list"></div>
         <div class="how-card">
           <strong>玩法说明</strong>
