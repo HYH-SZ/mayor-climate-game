@@ -275,6 +275,52 @@
       line-height: 1.35;
     }
 
+    .facility-effects {
+      display: grid;
+      gap: 5px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed #d8e4ef;
+    }
+
+    .facility-effects-title {
+      color: #526579;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .effect-chip {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 5px 7px;
+      border-radius: 8px;
+      background: #f8fbff;
+      color: #526579;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .effect-chip.good {
+      background: #edf9f1;
+      color: #16723a;
+    }
+
+    .effect-chip.bad {
+      background: #fff2ef;
+      color: #bf3928;
+    }
+
+    .effect-chip.neutral {
+      background: #f2f6fa;
+      color: #607287;
+    }
+
+    .effect-chip span:first-child {
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
     .how-card {
       margin-top: 18px;
       padding: 14px;
@@ -1016,7 +1062,13 @@
         heat: 4.5,
         windBlock: 0.6,
         color: "#df4a35",
-        note: "成本低、排放高，提供稳定电力"
+        note: "成本低、排放高，提供稳定电力",
+        effects: [
+          { label: "预算", text: "消耗少", tone: "good" },
+          { label: "碳排", text: "明显上升", tone: "bad" },
+          { label: "温度", text: "容易升温", tone: "bad" },
+          { label: "通风", text: "风口会受阻", tone: "bad" }
+        ]
       },
       wind: {
         name: "风电",
@@ -1026,7 +1078,13 @@
         heat: -0.8,
         windBlock: 0,
         color: "#1688d9",
-        note: "清洁能源，放在风道效果更好"
+        note: "清洁能源，放在风道效果更好",
+        effects: [
+          { label: "预算", text: "消耗较多", tone: "bad" },
+          { label: "碳排", text: "不增加", tone: "good" },
+          { label: "温度", text: "轻微降温", tone: "good" },
+          { label: "通风", text: "风道更有利", tone: "good" }
+        ]
       },
       heatPump: {
         name: "地源热泵",
@@ -1036,7 +1094,13 @@
         heat: -1.5,
         windBlock: 0,
         color: "#229953",
-        note: "高效供冷供热，低排放"
+        note: "高效供冷供热，低排放",
+        effects: [
+          { label: "预算", text: "中等消耗", tone: "neutral" },
+          { label: "碳排", text: "小幅增加", tone: "neutral" },
+          { label: "温度", text: "降温明显", tone: "good" },
+          { label: "地形", text: "低洼区更好", tone: "good" }
+        ]
       }
     };
 
@@ -1073,6 +1137,15 @@
             <span class="facility-name">${facility.name}</span>
             <span class="facility-meta">${facility.cost} 万元 / ${facility.carbon} 吨 CO2e</span>
             <span class="facility-note">${facility.note}</span>
+            <span class="facility-effects">
+              <span class="facility-effects-title">影响预览</span>
+              ${facility.effects.map(effect => `
+                <span class="effect-chip ${effect.tone}">
+                  <span>${effect.label}</span>
+                  <span>${effect.text}</span>
+                </span>
+              `).join("")}
+            </span>
           </span>
         </button>
       `).join("");
