@@ -668,6 +668,72 @@
       font-weight: 800;
     }
 
+    .advisor-card {
+      margin: 12px 0;
+      padding: 14px;
+      border: 1px solid #bde1fb;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #f2faff, #edf7ff);
+      box-shadow: 0 8px 18px rgba(22, 136, 217, 0.1);
+    }
+
+    .advisor-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .advisor-title {
+      color: #146ec2;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .advisor-badge {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #fff;
+      color: #146ec2;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .advisor-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .advisor-message {
+      padding: 9px 10px;
+      border-left: 4px solid #9bd0f4;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.78);
+      color: #43576b;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .advisor-message.warn {
+      border-left-color: #f49b3f;
+      background: #fff8ee;
+    }
+
+    .advisor-message.danger {
+      border-left-color: #df4a35;
+      background: #fff2ef;
+    }
+
+    .advisor-message.good {
+      border-left-color: #229953;
+      background: #f0fbf4;
+    }
+
     .metric-icon {
       display: grid;
       place-items: center;
@@ -979,6 +1045,16 @@
           <p class="impact-summary" id="impact-summary">放置或撤销设施后，这里会说明本次操作对结果是有利、不利还是中性。</p>
           <ul class="impact-list" id="impact-list">
             <li><span>温度 / 通风 / 碳排 / 预算</span><span class="impact-change flat">暂无变化</span></li>
+          </ul>
+        </div>
+
+        <div class="advisor-card">
+          <div class="advisor-head">
+            <span class="advisor-title">AI 顾问</span>
+            <span class="advisor-badge">规则型提示</span>
+          </div>
+          <ul class="advisor-list" id="advisor-list">
+            <li class="advisor-message">开始放置设施后，我会根据你的布局实时给出建议。</li>
           </ul>
         </div>
 
@@ -1404,6 +1480,7 @@
       $("#result").innerHTML = `已使用预算：<strong>${1000 - state.budget}</strong> 万元<br>已放置设施：<strong>${getLayout().length}</strong> 个<br>整体建议：${getOverallAdvice()}`;
       $("#tip").textContent = getTip();
       updateImpactDisplay();
+      updateAdvisorDisplay();
     }
 
     function getTip() {
@@ -1425,6 +1502,65 @@
       if (windCorridor) return "不错：风电放在通风廊道或风口时表现更好。";
       if (!getLayout().length) return "选择一种设施开始。放置后，仿真指标会立即更新。";
       return "继续比较成本、碳排、温度和通风，再决定是否结算。";
+    }
+
+    function getAdvisorMessages() {
+      const layout = getLayout();
+      if (!layout.length) {
+        return [{ level: "info", text: "先放置一个设施试试看。建议从煤电和风电各放一个，对比碳排与预算差异。" }];
+      }
+
+      const messages = [];
+      const hasCoalAtOutlet = layout.some(item => item.facility === "coal" && item.terrain === "outlet");
+      const hasCoalAtCorridor = layout.some(item => item.facility === "coal" && item.terrain === "corridor");
+      const hasWindAtCorridor = layout.some(item => item.facility === "wind" && (item.terrain === "corridor" || item.terrain === "outlet"));
+      const hasHeatPumpAtBasin = layout.some(item => item.facility === "heatPump" && item.terrain === "basin");
+      const coalCount = layout.filter(item => item.facility === "coal").length;
+      const cleanCount = layout.filter(item => item.facility === "wind" || item.facility === "heatPump").length;
+
+      if (hasCoalAtOutlet) {
+        messages.push({ level: "danger", text: "煤电放在风口会明显削弱全城通风。建议撤销这个煤电，或换到普通区。" });
+      } else if (hasCoalAtCorridor) {
+        messages.push({ level: "warn", text: "煤电放在通风廊道会让局部通风变差。可以把廊道留给风电或不放设施。" });
+      }
+
+      if (hasWindAtCorridor) {
+        messages.push({ level: "good", text: "风电放在通风廊道或风口是有利选择：不增加碳排，还能强化通风表现。" });
+      } else if (cleanCount === 0 && state.budget >= facilities.wind.cost) {
+        messages.push({ level: "info", text: "你还没有使用清洁能源。可以尝试在蓝色风道上放一个风电，观察碳排和风速变化。" });
+      }
+
+      if (hasHeatPumpAtBasin) {
+        messages.push({ level: "good", text: "地源热泵放在低洼盆地效果较好，适合用来改善温度指标。" });
+      } else if (state.metrics.temp > 26 && state.budget >= facilities.heatPump.cost) {
+        messages.push({ level: "warn", text: "当前温度偏高。可以尝试在绿色低洼盆地放置地源热泵。" });
+      }
+
+      if (state.metrics.carbon > 400) {
+        messages.push({ level: "danger", text: "碳排已经偏高。继续增加煤电会拉低综合表现，建议增加风电或热泵。" });
+      } else if (coalCount > cleanCount + 1) {
+        messages.push({ level: "warn", text: "当前煤电数量偏多，虽然省预算，但会带来碳排和升温压力。" });
+      }
+
+      if (state.metrics.wind < 1.8) {
+        messages.push({ level: "danger", text: "平均风速偏低。请检查是否在风口或通风廊道放了会阻风的设施。" });
+      }
+
+      if (state.budget < 80) {
+        messages.push({ level: "warn", text: "剩余预算已经很少，下一步可能无法继续放置设施。建议先结算或撤销低收益选择。" });
+      }
+
+      if (!messages.length) {
+        messages.push({ level: "good", text: "当前布局比较均衡。你可以继续微调，或点击结算查看本局结果。" });
+      }
+
+      return messages.slice(0, 4);
+    }
+
+    function updateAdvisorDisplay() {
+      $("#advisor-list").innerHTML = getAdvisorMessages().map(message => `
+        <li class="advisor-message ${message.level}">${message.text}</li>
+      `).join("");
     }
 
     function getLayout() {
