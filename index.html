@@ -499,6 +499,108 @@
       background: var(--green-soft);
     }
 
+    .impact-card {
+      margin: 12px 0;
+      padding: 14px;
+      border: 1px solid #d8e4ef;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 8px 18px rgba(30, 75, 115, 0.06);
+    }
+
+    .impact-card.positive {
+      border-color: #a8dfba;
+      background: #f0fbf4;
+    }
+
+    .impact-card.negative {
+      border-color: #ffc0b6;
+      background: #fff4f2;
+    }
+
+    .impact-card.neutral {
+      border-color: #d8e4ef;
+      background: #f8fbff;
+    }
+
+    .impact-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .impact-title {
+      color: #31506d;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .impact-verdict {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #eef4fb;
+      color: #526579;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .impact-card.positive .impact-verdict {
+      background: #dff7e7;
+      color: #16723a;
+    }
+
+    .impact-card.negative .impact-verdict {
+      background: #ffe2de;
+      color: #bf3928;
+    }
+
+    .impact-summary {
+      margin: 0 0 8px;
+      color: #526579;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .impact-list {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: #43576b;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .impact-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .impact-change.good {
+      color: #16723a;
+      font-weight: 800;
+    }
+
+    .impact-change.bad {
+      color: #bf3928;
+      font-weight: 800;
+    }
+
+    .impact-change.flat {
+      color: #607287;
+      font-weight: 800;
+    }
+
     .metric-icon {
       display: grid;
       place-items: center;
@@ -806,6 +908,17 @@
           </div>
         </div>
 
+        <div class="impact-card neutral" id="impact-card">
+          <div class="impact-head">
+            <span class="impact-title">本步影响</span>
+            <span class="impact-verdict" id="impact-verdict">等待操作</span>
+          </div>
+          <p class="impact-summary" id="impact-summary">放置或撤销设施后，这里会说明本次操作对结果是有利、不利还是中性。</p>
+          <ul class="impact-list" id="impact-list">
+            <li><span>温度 / 通风 / 碳排 / 预算</span><span class="impact-change flat">暂无变化</span></li>
+          </ul>
+        </div>
+
         <div class="actions">
           <button class="action-btn primary" id="finish">结算</button>
           <button class="action-btn" id="reset">重置</button>
@@ -946,7 +1059,8 @@
       selected: null,
       budget: 1000,
       placements: mapData.map(row => row.map(() => null)),
-      metrics: { temp: 25, wind: 2, carbon: 0 }
+      metrics: { temp: 25, wind: 2, carbon: 0 },
+      lastImpact: null
     };
 
     const $ = selector => document.querySelector(selector);
@@ -1036,17 +1150,29 @@
         return;
       }
 
+      const before = snapshotState();
       state.placements[y][x] = key;
       state.budget -= facility.cost;
-      updateAll();
+      updateAll({
+        type: "place",
+        facilityKey: key,
+        terrainKey: mapData[y][x],
+        before
+      });
     }
 
     function removePlacement(x, y) {
       const key = state.placements[y][x];
       if (!key) return;
+      const before = snapshotState();
       state.placements[y][x] = null;
       state.budget += facilities[key].cost;
-      updateAll();
+      updateAll({
+        type: "remove",
+        facilityKey: key,
+        terrainKey: mapData[y][x],
+        before
+      });
     }
 
     function calculateMetrics() {
@@ -1093,6 +1219,88 @@
       };
     }
 
+    function snapshotState() {
+      return {
+        budget: state.budget,
+        metrics: { ...state.metrics }
+      };
+    }
+
+    function formatDelta(value, unit = "") {
+      if (value === 0) return `无变化`;
+      const sign = value > 0 ? "+" : "";
+      return `${sign}${value}${unit}`;
+    }
+
+    function classifyChange(kind, delta) {
+      if (delta === 0) return { impactLabel: "中性", className: "flat", score: 0 };
+      const goodWhenPositive = kind === "wind" || kind === "budget";
+      const isGood = goodWhenPositive ? delta > 0 : delta < 0;
+      return {
+        impactLabel: isGood ? "有利" : "不利",
+        className: isGood ? "good" : "bad",
+        score: isGood ? 1 : -1
+      };
+    }
+
+    function buildImpact(action) {
+      if (!action) return null;
+
+      const deltas = {
+        temp: Number((state.metrics.temp - action.before.metrics.temp).toFixed(1)),
+        wind: Number((state.metrics.wind - action.before.metrics.wind).toFixed(2)),
+        carbon: state.metrics.carbon - action.before.metrics.carbon,
+        budget: state.budget - action.before.budget
+      };
+
+      const changes = [
+        { key: "temp", label: "平均温度", delta: deltas.temp, unit: " °C", hint: deltas.temp < 0 ? "降温" : deltas.temp > 0 ? "升温" : "未变" },
+        { key: "wind", label: "平均风速", delta: deltas.wind, unit: " m/s", hint: deltas.wind > 0 ? "通风增强" : deltas.wind < 0 ? "通风变弱" : "未变" },
+        { key: "carbon", label: "碳排放", delta: deltas.carbon, unit: " 吨", hint: deltas.carbon < 0 ? "排放下降" : deltas.carbon > 0 ? "排放上升" : "未变" },
+        { key: "budget", label: "剩余预算", delta: deltas.budget, unit: " 万元", hint: deltas.budget > 0 ? "预算回升" : deltas.budget < 0 ? "预算减少" : "未变" }
+      ].map(change => {
+        const classified = classifyChange(change.key, change.delta);
+        return { ...change, ...classified };
+      });
+
+      const score = changes.reduce((sum, change) => sum + change.score, 0);
+      const type = score > 0 ? "positive" : score < 0 ? "negative" : "neutral";
+      const verdict = score > 0 ? "总体有利" : score < 0 ? "需要权衡" : "影响中性";
+      const facility = facilities[action.facilityKey];
+      const terrain = terrains[action.terrainKey];
+      const verb = action.type === "place" ? "放置" : "撤销";
+      const summary = `${verb}“${facility.name}”于“${terrain.name}”后，系统根据温度、通风、碳排和预算变化给出判断。`;
+
+      return { type, verdict, summary, changes };
+    }
+
+    function updateImpactDisplay() {
+      const card = $("#impact-card");
+      const verdict = $("#impact-verdict");
+      const summary = $("#impact-summary");
+      const list = $("#impact-list");
+
+      card.classList.remove("positive", "negative", "neutral");
+
+      if (!state.lastImpact) {
+        card.classList.add("neutral");
+        verdict.textContent = "等待操作";
+        summary.textContent = "放置或撤销设施后，这里会说明本次操作对结果是有利、不利还是中性。";
+        list.innerHTML = `<li><span>温度 / 通风 / 碳排 / 预算</span><span class="impact-change flat">暂无变化</span></li>`;
+        return;
+      }
+
+      card.classList.add(state.lastImpact.type);
+      verdict.textContent = state.lastImpact.verdict;
+      summary.textContent = state.lastImpact.summary;
+      list.innerHTML = state.lastImpact.changes.map(change => `
+        <li>
+          <span>${change.label}：${change.hint}</span>
+          <span class="impact-change ${change.className}">${change.delta === 0 ? "中性 · 无变化" : `${change.impactLabel} · ${formatDelta(change.delta, change.unit)}`}</span>
+        </li>
+      `).join("");
+    }
+
     function updateMetrics() {
       $("#budget").textContent = state.budget;
       $("#temp").innerHTML = `${state.metrics.temp.toFixed(1)}<small> °C</small>`;
@@ -1103,8 +1311,9 @@
       $("#wind-status").textContent = state.metrics.wind < 1.8 ? "受阻" : state.metrics.wind > 2.3 ? "强" : "良好";
       $("#carbon-status").textContent = state.metrics.carbon > 400 ? "高" : state.metrics.carbon > 120 ? "中等" : "低";
 
-      $("#result").innerHTML = `已使用预算：<strong>${1000 - state.budget}</strong> 万元<br>已放置设施：<strong>${getLayout().length}</strong> 个`;
+      $("#result").innerHTML = `已使用预算：<strong>${1000 - state.budget}</strong> 万元<br>已放置设施：<strong>${getLayout().length}</strong> 个<br>整体建议：${getOverallAdvice()}`;
       $("#tip").textContent = getTip();
+      updateImpactDisplay();
     }
 
     function getTip() {
@@ -1145,8 +1354,18 @@
       return Math.round((carbonScore + tempScore + windScore) / 3);
     }
 
-    function updateAll() {
+    function getOverallAdvice() {
+      if (!getLayout().length) return "先放置设施，再观察变化。";
+      if (state.metrics.carbon > 400) return "碳排偏高，建议减少煤电或增加清洁能源。";
+      if (state.metrics.wind < 1.8) return "通风偏弱，检查是否阻挡了风口。";
+      if (state.metrics.temp > 26) return "温度偏高，可以尝试热泵或风电。";
+      if (getScore() >= 75) return "当前布局较均衡。";
+      return "继续比较预算、通风和碳排。";
+    }
+
+    function updateAll(action = null) {
       calculateMetrics();
+      if (action) state.lastImpact = buildImpact(action);
       renderMap();
       updateMetrics();
       updateFacilityStates();
@@ -1256,6 +1475,7 @@ ${layoutText}
       state.selected = null;
       state.budget = 1000;
       state.placements = mapData.map(row => row.map(() => null));
+      state.lastImpact = null;
       updateAll();
     });
 
