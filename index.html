@@ -812,7 +812,7 @@
         </div>
 
         <div class="tip" id="tip">选择一种设施开始。放置后，仿真指标会立即更新。</div>
-        <div class="result" id="result">点击结算查看评分，并下载本地 JSON 数据。</div>
+        <div class="result" id="result">点击结算查看评分，并下载本地 TXT 报告或 JSON 数据。</div>
       </aside>
     </main>
   </div>
@@ -849,7 +849,7 @@
           <span class="guide-step-number">4</span>
           <div>
             <strong>完成后结算</strong>
-            <p>点击“结算”，填写 2 题反馈问卷，然后下载本局 JSON 数据。</p>
+            <p>点击“结算”，填写 2 题反馈问卷，然后下载本局 TXT 报告；需要研究数据时也可下载 JSON。</p>
           </div>
         </div>
       </div>
@@ -878,8 +878,9 @@
         </div>
       </form>
       <div class="dialog-actions">
-        <button class="action-btn" id="close-modal">返回修改</button>
-        <button class="action-btn primary" id="download">提交并下载 JSON</button>
+        <button class="action-btn" id="close-modal" type="button">返回修改</button>
+        <button class="action-btn" id="download-json" type="button">下载 JSON 数据</button>
+        <button class="action-btn primary" id="download-txt" type="button">下载 TXT 报告</button>
       </div>
     </div>
   </div>
@@ -1160,12 +1161,14 @@
       localStorage.setItem("mayorClimateGuideSeen", "true");
     }
 
-    function downloadResult() {
+    function getSurveyAnswers() {
       const form = $("#survey");
       if (!form.reportValidity()) return;
+      return Object.fromEntries(new FormData(form).entries());
+    }
 
-      const survey = Object.fromEntries(new FormData(form).entries());
-      const data = {
+    function buildResultData(survey) {
+      return {
         project: "市长气候模拟游戏",
         timestamp: new Date().toISOString(),
         budgetUsed: 1000 - state.budget,
@@ -1174,19 +1177,78 @@
         layout: getLayout(),
         survey
       };
+    }
 
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" });
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = "市长气候模拟游戏-结果.json";
+      link.download = filename;
       link.click();
       URL.revokeObjectURL(link.href);
+    }
+
+    function formatReadableReport(data) {
+      const facilityNames = {
+        coal: "煤电",
+        wind: "风电",
+        heatPump: "地源热泵"
+      };
+      const terrainNames = {
+        normal: "普通区",
+        corridor: "通风廊道",
+        outlet: "风口",
+        residential: "居民区",
+        basin: "低洼盆地"
+      };
+      const surveyText = {
+        budgetChoice: data.survey.budgetChoice === "yes" ? "是" : "否",
+        windUnderstanding: data.survey.windUnderstanding === "true" ? "正确" : "错误"
+      };
+      const layoutText = data.layout.length
+        ? data.layout.map((item, index) => `${index + 1}. ${facilityNames[item.facility]}：第 ${item.y + 1} 行，第 ${item.x + 1} 列（${terrainNames[item.terrain]}）`).join("\n")
+        : "没有放置任何设施";
+
+      return `市长气候模拟游戏 - 本局结果
+
+生成时间：${new Date(data.timestamp).toLocaleString("zh-CN")}
+本局评分：${data.score} 分
+已使用预算：${data.budgetUsed} 万元
+
+实时指标
+- 平均温度：${data.metrics.temp} °C
+- 平均风速：${data.metrics.wind} m/s
+- 碳排放：${data.metrics.carbon} 吨
+
+设施布局
+${layoutText}
+
+反馈问卷
+1. 是否为了节省预算而选择煤电：${surveyText.budgetChoice}
+2. 是否理解“风口放煤电会降低全城通风”：${surveyText.windUnderstanding}
+
+说明：这个 TXT 文件适合直接查看；如果要做数据分析，请下载 JSON 数据文件。`;
+    }
+
+    function downloadReadableResult() {
+      const survey = getSurveyAnswers();
+      if (!survey) return;
+      const data = buildResultData(survey);
+      downloadFile("市长气候模拟游戏-结果报告.txt", formatReadableReport(data), "text/plain;charset=utf-8");
+      $("#modal").classList.add("hidden");
+    }
+
+    function downloadJsonResult() {
+      const survey = getSurveyAnswers();
+      if (!survey) return;
+      const data = buildResultData(survey);
+      downloadFile("市长气候模拟游戏-原始数据.json", JSON.stringify(data, null, 2), "application/json;charset=utf-8");
       $("#modal").classList.add("hidden");
     }
 
     $("#finish").addEventListener("click", () => {
       calculateMetrics();
-      $("#result").innerHTML = `本局评分：<strong>${getScore()}</strong><br>提交反馈后可下载本地 JSON 数据。`;
+      $("#result").innerHTML = `本局评分：<strong>${getScore()}</strong><br>提交反馈后可下载 TXT 报告或 JSON 数据。`;
       $("#modal").classList.remove("hidden");
     });
 
@@ -1198,7 +1260,8 @@
     });
 
     $("#close-modal").addEventListener("click", () => $("#modal").classList.add("hidden"));
-    $("#download").addEventListener("click", downloadResult);
+    $("#download-txt").addEventListener("click", downloadReadableResult);
+    $("#download-json").addEventListener("click", downloadJsonResult);
     $("#open-guide").addEventListener("click", openGuide);
     $("#skip-guide").addEventListener("click", closeGuide);
     $("#start-guide").addEventListener("click", closeGuide);
