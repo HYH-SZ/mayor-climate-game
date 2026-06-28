@@ -18,7 +18,32 @@ Players choose between coal power, wind power, and ground-source heat pumps. The
 2. Choose one facility from the left panel.
 3. Click a cell on the map to place it.
 4. Watch the temperature, wind, and carbon indicators change.
-5. Click finish, answer two short questions, and download the JSON result.
+5. Click finish, answer two short questions, and download the TXT report or JSON result.
+
+## Week 5 Backend and AI
+
+This project now includes two Vercel serverless functions:
+
+- `api/submit.js` - saves each game result into Supabase.
+- `api/chat.js` - safely calls DeepSeek from the server and returns an AI summary.
+
+The frontend never contains secret keys. Keys must be added in Vercel:
+
+1. Open Vercel project `mayor-climate-game`.
+2. Go to Settings > Environment Variables.
+3. Add:
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `DEEPSEEK_API_KEY`
+4. Redeploy the project.
+
+Create the Supabase table by running the SQL in:
+
+`supabase/schema.sql`
+
+After setup, user results are stored in Supabase table:
+
+`public.game_results`
 
 ## Week 3 Deliverables
 
@@ -40,6 +65,11 @@ mayor-climate-game/
 ├── spec.md
 ├── README.md
 ├── vercel.json
+├── api/
+│   ├── chat.js
+│   └── submit.js
+├── supabase/
+│   └── schema.sql
 ├── css/
 ├── js/
 └── research/

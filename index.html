@@ -881,6 +881,37 @@
       margin-top: 18px;
     }
 
+    .server-status,
+    .ai-result {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border: 1px solid #d8e4ef;
+      border-radius: 12px;
+      background: #f8fbff;
+      color: #526579;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .server-status.ok {
+      border-color: #a8dfba;
+      background: #f0fbf4;
+      color: #16723a;
+    }
+
+    .server-status.warn {
+      border-color: #f8d39c;
+      background: #fff8ee;
+      color: #8a5a12;
+    }
+
+    .server-status.error {
+      border-color: #ffc0b6;
+      background: #fff4f2;
+      color: #bf3928;
+    }
+
     .guide-dialog {
       width: min(680px, 100%);
       padding: 26px;
@@ -1129,8 +1160,11 @@
           <label><input type="radio" name="windUnderstanding" value="false"> 错误</label>
         </div>
       </form>
+      <div class="server-status" id="server-status">提交问卷后，系统会尝试把本局数据保存到 Supabase；如果后台暂未配置，仍可下载本地报告。</div>
+      <div class="ai-result" id="ai-result">需要 AI 帮你解释本局结果时，可以点击“生成 AI 总结”。</div>
       <div class="dialog-actions">
         <button class="action-btn" id="close-modal" type="button">返回修改</button>
+        <button class="action-btn" id="generate-ai" type="button">生成 AI 总结</button>
         <button class="action-btn" id="download-json" type="button">下载 JSON 数据</button>
         <button class="action-btn primary" id="download-txt" type="button">下载 TXT 报告</button>
       </div>
@@ -1217,7 +1251,8 @@
       budget: 1000,
       placements: mapData.map(row => row.map(() => null)),
       metrics: { temp: 25, wind: 2, carbon: 0 },
-      lastImpact: null
+      lastImpact: null,
+      aiSummary: ""
     };
 
     const $ = selector => document.querySelector(selector);
@@ -1620,8 +1655,64 @@
         score: getScore(),
         metrics: state.metrics,
         layout: getLayout(),
-        survey
+        survey,
+        aiSummary: state.aiSummary
       };
+    }
+
+    function setServerStatus(message, type = "") {
+      const status = $("#server-status");
+      status.className = `server-status ${type}`.trim();
+      status.textContent = message;
+    }
+
+    async function submitResultToSupabase(data) {
+      try {
+        setServerStatus("正在提交到 Supabase 数据库……");
+        const response = await fetch("/api/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.ok) {
+          throw new Error(result.error || "Supabase 提交失败");
+        }
+        setServerStatus("已保存到 Supabase 数据库。", "ok");
+        return true;
+      } catch (error) {
+        setServerStatus(`未保存到 Supabase：${error.message}。你仍然可以下载本地文件。`, "warn");
+        return false;
+      }
+    }
+
+    async function generateAiSummary() {
+      const survey = getSurveyAnswers();
+      if (!survey) return;
+
+      const button = $("#generate-ai");
+      const resultBox = $("#ai-result");
+      const data = buildResultData(survey);
+      button.disabled = true;
+      resultBox.textContent = "AI 正在分析本局布局……";
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.ok) {
+          throw new Error(result.error || "AI 总结生成失败");
+        }
+        state.aiSummary = result.message;
+        resultBox.textContent = result.message;
+      } catch (error) {
+        resultBox.textContent = `暂时无法生成 AI 总结：${error.message}。请确认 Vercel 环境变量 DEEPSEEK_API_KEY 已配置。`;
+      } finally {
+        button.disabled = false;
+      }
     }
 
     function downloadFile(filename, content, type) {
@@ -1672,21 +1763,26 @@ ${layoutText}
 1. 是否为了节省预算而选择煤电：${surveyText.budgetChoice}
 2. 是否理解“风口放煤电会降低全城通风”：${surveyText.windUnderstanding}
 
+AI 总结
+${data.aiSummary || "尚未生成 AI 总结。"}
+
 说明：这个 TXT 文件适合直接查看；如果要做数据分析，请下载 JSON 数据文件。`;
     }
 
-    function downloadReadableResult() {
+    async function downloadReadableResult() {
       const survey = getSurveyAnswers();
       if (!survey) return;
       const data = buildResultData(survey);
+      await submitResultToSupabase(data);
       downloadFile("市长气候模拟游戏-结果报告.txt", formatReadableReport(data), "text/plain;charset=utf-8");
       $("#modal").classList.add("hidden");
     }
 
-    function downloadJsonResult() {
+    async function downloadJsonResult() {
       const survey = getSurveyAnswers();
       if (!survey) return;
       const data = buildResultData(survey);
+      await submitResultToSupabase(data);
       downloadFile("市长气候模拟游戏-原始数据.json", JSON.stringify(data, null, 2), "application/json;charset=utf-8");
       $("#modal").classList.add("hidden");
     }
@@ -1702,12 +1798,14 @@ ${layoutText}
       state.budget = 1000;
       state.placements = mapData.map(row => row.map(() => null));
       state.lastImpact = null;
+      state.aiSummary = "";
       updateAll();
     });
 
     $("#close-modal").addEventListener("click", () => $("#modal").classList.add("hidden"));
     $("#download-txt").addEventListener("click", downloadReadableResult);
     $("#download-json").addEventListener("click", downloadJsonResult);
+    $("#generate-ai").addEventListener("click", generateAiSummary);
     $("#open-guide").addEventListener("click", openGuide);
     $("#skip-guide").addEventListener("click", closeGuide);
     $("#start-guide").addEventListener("click", closeGuide);
