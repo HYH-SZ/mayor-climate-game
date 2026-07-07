@@ -120,6 +120,43 @@
       line-height: 1.5;
     }
 
+    .mission-bar {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      padding: 12px 16px;
+      border: 1px solid #b8daf4;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.88);
+    }
+
+    .mission-goal {
+      margin: 0;
+      color: #31506d;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .mission-now {
+      margin: 6px 0 0;
+      color: #146ec2;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .mission-now.warn {
+      color: #bf3928;
+    }
+
+    .mission-now.good {
+      color: #16723a;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
     .dashboard {
       display: grid;
       grid-template-columns: 250px minmax(520px, 1fr) 260px;
@@ -210,11 +247,11 @@
 
     .facility {
       display: grid;
-      grid-template-columns: 64px 1fr;
-      gap: 12px;
+      grid-template-columns: 48px 1fr;
+      gap: 10px;
       width: 100%;
-      margin: 10px 0;
-      padding: 12px;
+      margin: 8px 0;
+      padding: 10px;
       border: 2px solid #d9e4ef;
       border-radius: 12px;
       background: #fff;
@@ -253,13 +290,13 @@
     .facility-icon {
       display: grid;
       place-items: center;
-      width: 64px;
-      height: 64px;
-      border-radius: 12px;
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
       color: #fff;
       font-weight: 900;
-      font-size: 22px;
-      box-shadow: inset 0 -18px 0 rgba(0, 0, 0, 0.12);
+      font-size: 18px;
+      box-shadow: inset 0 -14px 0 rgba(0, 0, 0, 0.12);
     }
 
     .facility-icon.coal {
@@ -276,101 +313,17 @@
 
     .facility-name {
       display: block;
-      margin: 3px 0 5px;
+      margin: 2px 0 4px;
       color: var(--ink);
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
     }
 
     .facility-meta {
       display: block;
-      margin-bottom: 5px;
       color: var(--muted);
       font-size: 12px;
-    }
-
-    .facility-note {
-      display: block;
-      color: #7c8a99;
-      font-size: 11px;
       line-height: 1.35;
-    }
-
-    .facility-effects {
-      display: grid;
-      gap: 5px;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px dashed #d8e4ef;
-    }
-
-    .facility-effects-title {
-      color: #526579;
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    .effect-chip {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 5px 7px;
-      border-radius: 8px;
-      background: #f8fbff;
-      color: #526579;
-      font-size: 11px;
-      line-height: 1.35;
-    }
-
-    .effect-chip.good {
-      background: #edf9f1;
-      color: #16723a;
-    }
-
-    .effect-chip.bad {
-      background: #fff2ef;
-      color: #bf3928;
-    }
-
-    .effect-chip.neutral {
-      background: #f2f6fa;
-      color: #607287;
-    }
-
-    .effect-chip span:first-child {
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .how-card {
-      margin-top: 18px;
-      padding: 14px;
-      border: 1px solid #bde1fb;
-      border-radius: 12px;
-      background: linear-gradient(180deg, #eef9ff, #e9f4ff);
-      color: #31506d;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .how-card strong {
-      display: block;
-      margin-bottom: 6px;
-      color: #1567aa;
-      font-size: 14px;
-    }
-
-    .guide-button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 9px 12px;
-      border: 1px solid #9bd0f4;
-      border-radius: 10px;
-      background: #fff;
-      color: #146ec2;
-      font-size: 13px;
-      font-weight: 800;
-      box-shadow: 0 6px 14px rgba(22, 136, 217, 0.1);
     }
 
     .map-panel {
@@ -392,7 +345,7 @@
 
     .map-wrap {
       position: relative;
-      padding: 20px 24px 14px;
+      padding: 16px 18px 12px;
       border: 1px solid #dce7f1;
       border-radius: 18px;
       background:
@@ -510,6 +463,176 @@
 
     .placed.heatPump {
       background: var(--green);
+    }
+
+    .cell.placement-ready {
+      cursor: crosshair;
+    }
+
+    .cell.placement-ready:hover {
+      outline: 3px solid rgba(22, 136, 217, 0.85);
+      background-color: rgba(22, 136, 217, 0.12) !important;
+    }
+
+    .map-empty {
+      position: absolute;
+      inset: 16px 18px 12px;
+      z-index: 4;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.72);
+      pointer-events: none;
+      text-align: center;
+    }
+
+    .map-empty p {
+      margin: 0;
+      max-width: 280px;
+      color: #31506d;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .metric-compact {
+      padding: 10px 8px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      text-align: center;
+      background: #fff;
+    }
+
+    .metric-compact.temp {
+      border-color: #ffc98f;
+      background: var(--orange-soft);
+    }
+
+    .metric-compact.wind {
+      border-color: #a7d8fb;
+      background: #edf8ff;
+    }
+
+    .metric-compact.carbon {
+      border-color: #bde5c9;
+      background: var(--green-soft);
+    }
+
+    .metric-compact .metric-label {
+      display: block;
+      font-size: 11px;
+    }
+
+    .metric-compact .metric-value {
+      margin-top: 4px;
+      font-size: 22px;
+    }
+
+    .metric-compact .metric-value small {
+      font-size: 11px;
+    }
+
+    .score-card {
+      margin-bottom: 12px;
+      padding: 14px 12px;
+      border: 1px solid #c9def4;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #f7fbff, #edf6ff);
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .score-card.score-pulse {
+      transform: scale(1.02);
+      box-shadow: 0 10px 24px rgba(22, 136, 217, 0.16);
+    }
+
+    .score-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .score-title {
+      color: #31506d;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .score-delta {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .score-delta.idle {
+      background: #eef4fb;
+      color: #607287;
+    }
+
+    .score-delta.up {
+      background: #dff7e7;
+      color: #16723a;
+    }
+
+    .score-delta.down {
+      background: #ffe2de;
+      color: #bf3928;
+    }
+
+    .score-delta.flat {
+      background: #eef4fb;
+      color: #607287;
+    }
+
+    .score-value-wrap {
+      color: var(--ink);
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .score-value-wrap small {
+      margin-left: 4px;
+      font-size: 14px;
+      color: #607287;
+    }
+
+    .score-label {
+      margin: 8px 0 0;
+      color: #526579;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .extra-panel {
+      margin: 10px 0;
+      padding: 10px 12px;
+      border: 1px solid #d8e4ef;
+      border-radius: 12px;
+      background: #f8fbff;
+    }
+
+    .extra-panel summary {
+      cursor: pointer;
+      color: #526579;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .extra-panel[open] summary {
+      margin-bottom: 10px;
     }
 
     .legend {
@@ -810,25 +933,6 @@
       color: #fff;
     }
 
-    .tip {
-      margin-top: 14px;
-      padding: 12px;
-      border: 1px solid #cfe0ee;
-      border-radius: 12px;
-      background: #f8fbff;
-      color: #526579;
-      font-size: 12px;
-      line-height: 1.55;
-    }
-
-    .result {
-      margin-top: 10px;
-      color: #607287;
-      font-size: 12px;
-      line-height: 1.55;
-      text-align: center;
-    }
-
     .modal {
       position: fixed;
       inset: 0;
@@ -994,15 +1098,18 @@
         <div class="planet" aria-hidden="true"></div>
         <div>
           <h1>市长气候模拟游戏</h1>
-          <p class="subtitle">在有限预算下布局能源设施，观察城市微气候、通风和碳排放的变化。</p>
+          <p class="subtitle">你是市长：在 1000 万预算内放置能源设施，观察城市温度、通风和碳排放。</p>
         </div>
+      </div>
+      <div class="mission-bar">
+        <p class="mission-goal">目标：控制碳排放，保持城市通风</p>
+        <p class="mission-now" id="mission-now">第 1 步：在左侧选择一种设施</p>
       </div>
     </header>
 
     <main class="dashboard">
       <aside class="panel side-panel">
-        <h2 class="panel-title"><span class="title-icon">设</span>选择设施</h2>
-        <p class="helper">先选择一种设施，再点击城市地图放置。点击已放置的设施可以撤销。</p>
+        <h2 class="panel-title"><span class="title-icon">1</span>选择设施</h2>
         <div class="budget-card">
           <span class="budget-icon">预</span>
           <span>
@@ -1011,23 +1118,17 @@
           </span>
         </div>
         <div id="facility-list"></div>
-        <div class="how-card">
-          <strong>玩法说明</strong>
-          在地图上放置设施，尝试改善城市温度、通风和碳排。完成后点击结算查看结果。
-          <button class="guide-button" id="open-guide" type="button">查看新手引导</button>
-        </div>
       </aside>
 
       <section class="panel map-panel">
         <div class="map-head">
-          <div>
-            <h2 class="panel-title"><span class="title-icon">图</span>城市地图</h2>
-            <p class="helper">蓝色是通风廊道和风口，橙色是居民区，绿色是低洼盆地。</p>
-          </div>
-          <div class="grid-note">网格：12 x 12</div>
+          <h2 class="panel-title"><span class="title-icon">2</span>点击地图放置</h2>
         </div>
 
         <div class="map-wrap">
+          <div class="map-empty" id="map-empty">
+            <p>请先在左侧选择设施，再点击地图格子放置</p>
+          </div>
           <div class="axis" id="col-axis"></div>
           <div class="map-row">
             <div class="row-numbers" id="row-axis"></div>
@@ -1038,110 +1139,54 @@
       </section>
 
       <aside class="panel side-panel">
-        <h2 class="panel-title"><span class="title-icon">数</span>实时指标</h2>
-        <p class="helper">实时观察你的城市表现。</p>
+        <h2 class="panel-title"><span class="title-icon">3</span>城市状态</h2>
 
-        <div class="metric-card temp">
-          <div class="metric-icon">温</div>
-          <div>
-            <div class="metric-label">平均温度</div>
+        <div class="score-card" id="score-card">
+          <div class="score-head">
+            <span class="score-title">城市评分</span>
+            <span class="score-delta idle" id="score-delta">放置后更新</span>
+          </div>
+          <div class="score-value-wrap">
+            <span id="live-score">—</span><small>分</small>
+          </div>
+          <p class="score-label" id="score-label">做出选择后实时更新</p>
+        </div>
+
+        <div class="metrics-row">
+          <div class="metric-compact temp">
+            <span class="metric-label">温度</span>
             <div class="metric-value" id="temp">25.0<small> °C</small></div>
-            <span class="pill" id="temp-status">稳定</span>
           </div>
-        </div>
-
-        <div class="metric-card wind">
-          <div class="metric-icon">风</div>
-          <div>
-            <div class="metric-label">平均风速</div>
+          <div class="metric-compact wind">
+            <span class="metric-label">风速</span>
             <div class="metric-value" id="wind">2.00<small> m/s</small></div>
-            <span class="pill" id="wind-status">良好</span>
           </div>
-        </div>
-
-        <div class="metric-card carbon">
-          <div class="metric-icon">碳</div>
-          <div>
-            <div class="metric-label">碳排放</div>
+          <div class="metric-compact carbon">
+            <span class="metric-label">碳排</span>
             <div class="metric-value" id="carbon">0<small> t</small></div>
-            <span class="pill" id="carbon-status">低</span>
           </div>
         </div>
 
-        <div class="impact-card neutral" id="impact-card">
-          <div class="impact-head">
-            <span class="impact-title">本步影响</span>
-            <span class="impact-verdict" id="impact-verdict">等待操作</span>
+        <details class="extra-panel hidden" id="extra-panel">
+          <summary>查看本步影响</summary>
+          <div class="impact-card neutral" id="impact-card">
+            <div class="impact-head">
+              <span class="impact-title">本步影响</span>
+              <span class="impact-verdict" id="impact-verdict">等待操作</span>
+            </div>
+            <p class="impact-summary" id="impact-summary">放置或撤销设施后，这里会显示变化。</p>
+            <ul class="impact-list" id="impact-list">
+              <li><span>温度 / 通风 / 碳排 / 预算</span><span class="impact-change flat">暂无变化</span></li>
+            </ul>
           </div>
-          <p class="impact-summary" id="impact-summary">放置或撤销设施后，这里会说明本次操作对结果是有利、不利还是中性。</p>
-          <ul class="impact-list" id="impact-list">
-            <li><span>温度 / 通风 / 碳排 / 预算</span><span class="impact-change flat">暂无变化</span></li>
-          </ul>
-        </div>
-
-        <div class="advisor-card">
-          <div class="advisor-head">
-            <span class="advisor-title">AI 顾问</span>
-            <span class="advisor-badge">规则型提示</span>
-          </div>
-          <ul class="advisor-list" id="advisor-list">
-            <li class="advisor-message">开始放置设施后，我会根据你的布局实时给出建议。</li>
-          </ul>
-        </div>
+        </details>
 
         <div class="actions">
           <button class="action-btn primary" id="finish">结算</button>
           <button class="action-btn" id="reset">重置</button>
         </div>
-
-        <div class="tip" id="tip">选择一种设施开始。放置后，仿真指标会立即更新。</div>
-        <div class="result" id="result">点击结算查看评分，并下载本地 TXT 报告或 JSON 数据。</div>
       </aside>
     </main>
-  </div>
-
-  <div class="modal guide-modal hidden" id="guide-modal">
-    <div class="dialog guide-dialog">
-      <span class="guide-kicker">新手引导 · 约 30 秒</span>
-      <h2>欢迎来到市长气候模拟游戏</h2>
-      <p class="helper">你的目标是在 1000 万元预算内布局能源设施，并观察城市温度、通风和碳排放如何变化。</p>
-
-      <div class="guide-steps">
-        <div class="guide-step">
-          <span class="guide-step-number">1</span>
-          <div>
-            <strong>先选一种设施</strong>
-            <p>左侧有煤电、风电和地源热泵。它们的成本、碳排和降温效果不同。</p>
-          </div>
-        </div>
-        <div class="guide-step">
-          <span class="guide-step-number">2</span>
-          <div>
-            <strong>再点击地图格子</strong>
-            <p>蓝色是通风廊道和风口，橙色是居民区，绿色是低洼盆地。点击已放置设施可以撤销。</p>
-          </div>
-        </div>
-        <div class="guide-step">
-          <span class="guide-step-number">3</span>
-          <div>
-            <strong>观察右侧指标</strong>
-            <p>平均温度、平均风速和碳排放会实时更新。注意：煤电放在风口会阻碍通风。</p>
-          </div>
-        </div>
-        <div class="guide-step">
-          <span class="guide-step-number">4</span>
-          <div>
-            <strong>完成后结算</strong>
-            <p>点击“结算”，填写 2 题反馈问卷，然后下载本局 TXT 报告；需要研究数据时也可下载 JSON。</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="dialog-actions">
-        <button class="action-btn" id="skip-guide" type="button">稍后再看</button>
-        <button class="action-btn primary" id="start-guide" type="button">开始游戏</button>
-      </div>
-    </div>
   </div>
 
   <div class="modal hidden" id="modal">
@@ -1165,7 +1210,6 @@
       <div class="dialog-actions">
         <button class="action-btn" id="close-modal" type="button">返回修改</button>
         <button class="action-btn" id="generate-ai" type="button">生成 AI 总结</button>
-        <button class="action-btn" id="download-json" type="button">下载 JSON 数据</button>
         <button class="action-btn primary" id="download-txt" type="button">下载 TXT 报告</button>
       </div>
     </div>
@@ -1263,17 +1307,7 @@
           <span class="facility-icon ${key}">${facility.label}</span>
           <span>
             <span class="facility-name">${facility.name}</span>
-            <span class="facility-meta">${facility.cost} 万元 / ${facility.carbon} 吨 CO2e</span>
-            <span class="facility-note">${facility.note}</span>
-            <span class="facility-effects">
-              <span class="facility-effects-title">影响预览</span>
-              ${facility.effects.map(effect => `
-                <span class="effect-chip ${effect.tone}">
-                  <span>${effect.label}</span>
-                  <span>${effect.text}</span>
-                </span>
-              `).join("")}
-            </span>
+            <span class="facility-meta">${facility.cost} 万 · 碳 ${facility.carbon} 吨</span>
           </span>
         </button>
       `).join("");
@@ -1284,6 +1318,8 @@
           if (state.budget < facilities[key].cost) return;
           state.selected = key;
           updateFacilityStates();
+          renderMap();
+          updateMissionCue();
         });
       });
     }
@@ -1311,6 +1347,7 @@
           const facilityKey = state.placements[y][x];
           const cell = document.createElement("div");
           cell.className = `cell ${terrainKey}`;
+          cell.classList.toggle("placement-ready", Boolean(state.selected && !facilityKey));
           cell.title = `${terrain.name} (${x + 1}, ${y + 1})`;
 
           if (facilityKey) {
@@ -1325,7 +1362,7 @@
             if (state.placements[y][x]) {
               removePlacement(x, y);
             } else if (!state.selected) {
-              $("#tip").textContent = "请先在左侧选择一种设施。";
+              updateMissionCue();
             } else {
               placeFacility(x, y, state.selected);
             }
@@ -1347,7 +1384,8 @@
     function placeFacility(x, y, key) {
       const facility = facilities[key];
       if (state.budget < facility.cost) {
-        $("#tip").textContent = "预算不足，无法放置该设施。";
+        $("#mission-now").textContent = "预算不足，请换更便宜的设施或撤销已有布局。";
+        $("#mission-now").classList.add("warn");
         return;
       }
 
@@ -1360,6 +1398,10 @@
         terrainKey: mapData[y][x],
         before
       });
+
+      const extraPanel = $("#extra-panel");
+      extraPanel.classList.remove("hidden");
+      extraPanel.open = true;
     }
 
     function removePlacement(x, y) {
@@ -1502,20 +1544,98 @@
       `).join("");
     }
 
-    function updateMetrics() {
+    function updateMetrics(action = null) {
       $("#budget").textContent = state.budget;
       $("#temp").innerHTML = `${state.metrics.temp.toFixed(1)}<small> °C</small>`;
       $("#wind").innerHTML = `${state.metrics.wind.toFixed(2)}<small> m/s</small>`;
       $("#carbon").innerHTML = `${state.metrics.carbon}<small> t</small>`;
-
-      $("#temp-status").textContent = state.metrics.temp > 26 ? "偏热" : state.metrics.temp < 24.8 ? "降温中" : "稳定";
-      $("#wind-status").textContent = state.metrics.wind < 1.8 ? "受阻" : state.metrics.wind > 2.3 ? "强" : "良好";
-      $("#carbon-status").textContent = state.metrics.carbon > 400 ? "高" : state.metrics.carbon > 120 ? "中等" : "低";
-
-      $("#result").innerHTML = `已使用预算：<strong>${1000 - state.budget}</strong> 万元<br>已放置设施：<strong>${getLayout().length}</strong> 个<br>整体建议：${getOverallAdvice()}`;
-      $("#tip").textContent = getTip();
+      updateScoreDisplay(action);
       updateImpactDisplay();
-      updateAdvisorDisplay();
+      updateMissionCue();
+    }
+
+    function getScore(metrics = state.metrics) {
+      const carbonScore = Math.max(0, 100 - metrics.carbon / 12);
+      const tempScore = Math.max(0, 100 - Math.abs(metrics.temp - 24) * 12);
+      const windScore = Math.min(100, metrics.wind * 35);
+      return Math.round((carbonScore + tempScore + windScore) / 3);
+    }
+
+    function getScoreGrade(score) {
+      if (score >= 80) return "表现优秀";
+      if (score >= 60) return "表现良好";
+      if (score >= 40) return "尚可改进";
+      return "需要调整";
+    }
+
+    function updateScoreDisplay(action = null) {
+      const scoreCard = $("#score-card");
+      const scoreEl = $("#live-score");
+      const deltaEl = $("#score-delta");
+      const labelEl = $("#score-label");
+      const layout = getLayout();
+
+      if (!layout.length) {
+        scoreEl.textContent = "—";
+        deltaEl.textContent = "放置后更新";
+        deltaEl.className = "score-delta idle";
+        labelEl.textContent = "做出选择后实时更新";
+        return;
+      }
+
+      const score = getScore();
+      scoreEl.textContent = score;
+      labelEl.textContent = getScoreGrade(score);
+
+      if (action?.before?.metrics) {
+        const previousScore = getScore(action.before.metrics);
+        const delta = score - previousScore;
+        if (delta > 0) {
+          deltaEl.textContent = `+${delta}`;
+          deltaEl.className = "score-delta up";
+        } else if (delta < 0) {
+          deltaEl.textContent = `${delta}`;
+          deltaEl.className = "score-delta down";
+        } else {
+          deltaEl.textContent = "±0";
+          deltaEl.className = "score-delta flat";
+        }
+        scoreCard.classList.add("score-pulse");
+        window.setTimeout(() => scoreCard.classList.remove("score-pulse"), 420);
+      } else {
+        deltaEl.textContent = "当前";
+        deltaEl.className = "score-delta idle";
+      }
+    }
+
+    function updateMissionCue() {
+      const layout = getLayout();
+      const mission = $("#mission-now");
+      const mapEmpty = $("#map-empty");
+      const extraPanel = $("#extra-panel");
+
+      mission.classList.remove("warn", "good");
+      extraPanel.classList.toggle("hidden", !layout.length);
+
+      if (!state.selected && !layout.length) {
+        mission.textContent = "第 1 步：在左侧选择一种设施";
+        mapEmpty.classList.remove("hidden");
+      } else if (state.selected && !layout.length) {
+        mission.textContent = `第 2 步：点击地图放置「${facilities[state.selected].name}」`;
+        mapEmpty.classList.add("hidden");
+      } else if (layout.length) {
+        const tip = getTip();
+        if (tip.startsWith("警告")) {
+          mission.textContent = tip;
+          mission.classList.add("warn");
+        } else if (tip.startsWith("不错")) {
+          mission.textContent = tip;
+          mission.classList.add("good");
+        } else {
+          mission.textContent = `已放置 ${layout.length} 个 · 继续布局或点击「结算」`;
+        }
+        mapEmpty.classList.add("hidden");
+      }
     }
 
     function getTip() {
@@ -1539,65 +1659,6 @@
       return "继续比较成本、碳排、温度和通风，再决定是否结算。";
     }
 
-    function getAdvisorMessages() {
-      const layout = getLayout();
-      if (!layout.length) {
-        return [{ level: "info", text: "先放置一个设施试试看。建议从煤电和风电各放一个，对比碳排与预算差异。" }];
-      }
-
-      const messages = [];
-      const hasCoalAtOutlet = layout.some(item => item.facility === "coal" && item.terrain === "outlet");
-      const hasCoalAtCorridor = layout.some(item => item.facility === "coal" && item.terrain === "corridor");
-      const hasWindAtCorridor = layout.some(item => item.facility === "wind" && (item.terrain === "corridor" || item.terrain === "outlet"));
-      const hasHeatPumpAtBasin = layout.some(item => item.facility === "heatPump" && item.terrain === "basin");
-      const coalCount = layout.filter(item => item.facility === "coal").length;
-      const cleanCount = layout.filter(item => item.facility === "wind" || item.facility === "heatPump").length;
-
-      if (hasCoalAtOutlet) {
-        messages.push({ level: "danger", text: "煤电放在风口会明显削弱全城通风。建议撤销这个煤电，或换到普通区。" });
-      } else if (hasCoalAtCorridor) {
-        messages.push({ level: "warn", text: "煤电放在通风廊道会让局部通风变差。可以把廊道留给风电或不放设施。" });
-      }
-
-      if (hasWindAtCorridor) {
-        messages.push({ level: "good", text: "风电放在通风廊道或风口是有利选择：不增加碳排，还能强化通风表现。" });
-      } else if (cleanCount === 0 && state.budget >= facilities.wind.cost) {
-        messages.push({ level: "info", text: "你还没有使用清洁能源。可以尝试在蓝色风道上放一个风电，观察碳排和风速变化。" });
-      }
-
-      if (hasHeatPumpAtBasin) {
-        messages.push({ level: "good", text: "地源热泵放在低洼盆地效果较好，适合用来改善温度指标。" });
-      } else if (state.metrics.temp > 26 && state.budget >= facilities.heatPump.cost) {
-        messages.push({ level: "warn", text: "当前温度偏高。可以尝试在绿色低洼盆地放置地源热泵。" });
-      }
-
-      if (state.metrics.carbon > 400) {
-        messages.push({ level: "danger", text: "碳排已经偏高。继续增加煤电会拉低综合表现，建议增加风电或热泵。" });
-      } else if (coalCount > cleanCount + 1) {
-        messages.push({ level: "warn", text: "当前煤电数量偏多，虽然省预算，但会带来碳排和升温压力。" });
-      }
-
-      if (state.metrics.wind < 1.8) {
-        messages.push({ level: "danger", text: "平均风速偏低。请检查是否在风口或通风廊道放了会阻风的设施。" });
-      }
-
-      if (state.budget < 80) {
-        messages.push({ level: "warn", text: "剩余预算已经很少，下一步可能无法继续放置设施。建议先结算或撤销低收益选择。" });
-      }
-
-      if (!messages.length) {
-        messages.push({ level: "good", text: "当前布局比较均衡。你可以继续微调，或点击结算查看本局结果。" });
-      }
-
-      return messages.slice(0, 4);
-    }
-
-    function updateAdvisorDisplay() {
-      $("#advisor-list").innerHTML = getAdvisorMessages().map(message => `
-        <li class="advisor-message ${message.level}">${message.text}</li>
-      `).join("");
-    }
-
     function getLayout() {
       const layout = [];
       state.placements.forEach((row, y) => {
@@ -1608,37 +1669,12 @@
       return layout;
     }
 
-    function getScore() {
-      const carbonScore = Math.max(0, 100 - state.metrics.carbon / 12);
-      const tempScore = Math.max(0, 100 - Math.abs(state.metrics.temp - 24) * 12);
-      const windScore = Math.min(100, state.metrics.wind * 35);
-      return Math.round((carbonScore + tempScore + windScore) / 3);
-    }
-
-    function getOverallAdvice() {
-      if (!getLayout().length) return "先放置设施，再观察变化。";
-      if (state.metrics.carbon > 400) return "碳排偏高，建议减少煤电或增加清洁能源。";
-      if (state.metrics.wind < 1.8) return "通风偏弱，检查是否阻挡了风口。";
-      if (state.metrics.temp > 26) return "温度偏高，可以尝试热泵或风电。";
-      if (getScore() >= 75) return "当前布局较均衡。";
-      return "继续比较预算、通风和碳排。";
-    }
-
     function updateAll(action = null) {
       calculateMetrics();
       if (action) state.lastImpact = buildImpact(action);
       renderMap();
-      updateMetrics();
+      updateMetrics(action);
       updateFacilityStates();
-    }
-
-    function openGuide() {
-      $("#guide-modal").classList.remove("hidden");
-    }
-
-    function closeGuide() {
-      $("#guide-modal").classList.add("hidden");
-      localStorage.setItem("mayorClimateGuideSeen", "true");
     }
 
     function getSurveyAnswers() {
@@ -1766,7 +1802,7 @@ ${layoutText}
 AI 总结
 ${data.aiSummary || "尚未生成 AI 总结。"}
 
-说明：这个 TXT 文件适合直接查看；如果要做数据分析，请下载 JSON 数据文件。`;
+说明：本报告可直接查看本局结果。`;
     }
 
     async function downloadReadableResult() {
@@ -1778,18 +1814,8 @@ ${data.aiSummary || "尚未生成 AI 总结。"}
       $("#modal").classList.add("hidden");
     }
 
-    async function downloadJsonResult() {
-      const survey = getSurveyAnswers();
-      if (!survey) return;
-      const data = buildResultData(survey);
-      await submitResultToSupabase(data);
-      downloadFile("市长气候模拟游戏-原始数据.json", JSON.stringify(data, null, 2), "application/json;charset=utf-8");
-      $("#modal").classList.add("hidden");
-    }
-
     $("#finish").addEventListener("click", () => {
       calculateMetrics();
-      $("#result").innerHTML = `本局评分：<strong>${getScore()}</strong><br>提交反馈后可下载 TXT 报告或 JSON 数据。`;
       $("#modal").classList.remove("hidden");
     });
 
@@ -1799,25 +1825,20 @@ ${data.aiSummary || "尚未生成 AI 总结。"}
       state.placements = mapData.map(row => row.map(() => null));
       state.lastImpact = null;
       state.aiSummary = "";
+      $("#extra-panel").classList.add("hidden");
+      $("#extra-panel").open = false;
       updateAll();
     });
 
     $("#close-modal").addEventListener("click", () => $("#modal").classList.add("hidden"));
     $("#download-txt").addEventListener("click", downloadReadableResult);
-    $("#download-json").addEventListener("click", downloadJsonResult);
     $("#generate-ai").addEventListener("click", generateAiSummary);
-    $("#open-guide").addEventListener("click", openGuide);
-    $("#skip-guide").addEventListener("click", closeGuide);
-    $("#start-guide").addEventListener("click", closeGuide);
 
     renderFacilities();
     renderAxes();
     renderLegend();
     updateAll();
-
-    if (localStorage.getItem("mayorClimateGuideSeen") !== "true") {
-      openGuide();
-    }
   </script>
 </body>
 </html>
+打开本地的HTML
