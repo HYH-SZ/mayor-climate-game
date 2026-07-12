@@ -1180,6 +1180,22 @@
     .grid-2-7-5,.grid-2-6-6,.grid-2-8-4,.grid-2-4-8{grid-template-columns:1fr}
     .grid-12{grid-template-columns:repeat(6,1fr)}
   }
+
+  /* 打印 / PDF 备份：每页独立分页，隐藏导航 */
+  @media print{
+    @page{size:landscape;margin:0}
+    body{overflow:visible;background:#fff}
+    #deck{position:static;width:auto;height:auto;display:block;transform:none!important;transition:none!important}
+    .slide{
+      position:relative;width:100vw;height:100vh;min-height:100vh;
+      page-break-after:always;break-after:page;overflow:hidden
+    }
+    #nav,#overview,#hint{display:none!important}
+    body.motion-ready [data-anim],body.motion-ready [data-anim="pipeline"] [data-anim]{
+      opacity:1!important;transform:none!important
+    }
+    .row-fill,.bar-tower,.tl-node,.stack-block{opacity:1!important;transform:none!important}
+  }
 </style>
 </head>
 <body class="canvas-mode">
