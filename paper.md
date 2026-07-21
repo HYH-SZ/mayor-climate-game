@@ -1,12 +1,12 @@
 # Mayor Climate Game — Paper Draft
 
-> Student manuscript draft for Generation AI 2026. Results below use **N = 10** completed sessions with verified exports (July 2026). Pre/post survey flow was added to the live site after these sessions; ongoing recruitment will support within-subject pre/post analysis.
+> Student manuscript draft for Generation AI 2026. Results below use **N = 15** completed session records with verified exports (July 2026): 10 earlier sessions plus 5 pre/post TXT exports.
 
 ---
 
 ## Abstract
 
-Urban learners must reason about coupled tradeoffs among energy cost, carbon emissions, and ventilation-sensitive siting, yet professional simulation tools remain inaccessible in many classrooms. This student paper reports *Mayor Climate Game*, a browser-based serious game deployed at `https://mayor-climate-game.vercel.app`, and an exploratory pilot with undergraduate volunteers. Participants allocated a fixed municipal budget across coal, wind, and ground-source heat pump facilities on a terrain-typed 12 × 12 grid while monitoring simplified climate indicators. The research question asks whether the artifact shapes facility choices and understanding of budget–carbon–ventilation tradeoffs. An updated study flow now administers matched cognition and attitude items before and after gameplay (linked by `sessionId`), with informed consent on the first screen and automatic logging to Supabase. In the first pilot wave (*N* = 10 completed sessions, July 2026), all participants answered the ventilation knowledge item correctly and none placed coal on wind outlets; eight of ten reported choosing coal to save budget. Final scores ranged from 51 to 88 (*M* ≈ 80.2) and total carbon from 0 to 1,440 t CO₂e (*M* ≈ 273 t). Lower-carbon layouts tended to co-occur with higher scores. Findings are interpreted cautiously as preliminary descriptive patterns rather than confirmatory evidence; the simplified in-game model is not a professional CFD simulation.
+Urban learners must reason about coupled tradeoffs among energy cost, carbon emissions, and ventilation-sensitive siting, yet professional simulation tools remain inaccessible in many classrooms. This student paper reports *Mayor Climate Game*, a browser-based serious game deployed at `https://mayor-climate-game.vercel.app`, and an exploratory pilot with **15 completed session records** (July 2026). Participants allocated a fixed municipal budget across coal, wind, and ground-source heat pump facilities on a terrain-typed 12 × 12 grid while monitoring simplified climate indicators. The live site administers matched cognition and attitude items before and after gameplay (linked by `sessionId`), with informed consent on the first screen and automatic logging to Supabase. In the full pilot sample, all 15 sessions answered the ventilation item correctly and none placed coal on wind outlets; 11 of 15 reported budget-driven coal motivation. Final scores ranged from 51 to 88 (*M* ≈ 76.9) and total carbon from 0 to 1,440 t CO₂e (*M* ≈ 438 t). Five pre/post exports showed cognition stable at 3/4 before and after. Findings are interpreted cautiously as preliminary descriptive patterns rather than confirmatory evidence.
 
 ---
 
@@ -78,7 +78,7 @@ All items for one participant share a client-generated **`sessionId`** (UUID) so
 | Coal on `outlet` / `corridor` | Parsed from `layout` |
 | Post-only gameplay items | e.g., `budgetChoice`, `windUnderstanding` |
 
-**Pilot wave note.** The first ten completed sessions analyzed below were collected **before** the built-in pre-test screen was deployed; they therefore support descriptive post-play and behavioral analysis but **not** within-session pre/post change for that wave. Ongoing recruitment uses the full consent → pre → play → post flow.
+**Pilot wave note.** Ten sessions were collected before the built-in pre-test screen; five additional TXT exports (July 21 afternoon) include matched pre/post cognition scores. All 15 session records are included in descriptive results below.
 
 ### Consent
 
@@ -97,7 +97,7 @@ Participants clicked **“我同意参与”** to continue to the pre-test or **
 
 - **Population:** undergraduate volunteers associated with the Generation AI 2026 Research Project course context
 - **Channel:** shared public Vercel link (`mayor-climate-game.vercel.app`) and in-class / class-group invitations
-- **Target sample:** 15–20 completed sessions for the full pre/post wave (ongoing); first descriptive wave *N* = 10 (July 2026)
+- **Target sample:** 15–20 completed sessions for the full pre/post wave; **current sample:** *N* = 15 session records (10 earlier + 5 pre/post TXT exports), July 2026
 - **Inclusion:** adults who completed one gameplay round and post-play export or server log
 - **Dates:** July 2026
 
@@ -120,32 +120,36 @@ Participants clicked **“我同意参与”** to continue to the pre-test or **
 
 ## Results
 
-Ten completed sessions were verified in July 2026 (seven human-readable TXT exports plus three earlier pilot logs referenced in the repository). All sessions included post-play survey responses and full layout JSON.
+Fifteen completed session records were verified in July 2026 (ten earlier exports plus five pre/post TXT reports from the updated consent → pre → play → post flow).
 
 ### Survey and knowledge items
 
-- **Ventilation understanding:** 10/10 answered the ventilation rule item correctly
-- **Budget motivation (self-report):** 8/10 reported choosing coal to save budget; 2/10 reported they did not
+- **Ventilation understanding:** 15/15 answered the ventilation rule item correctly
+- **Budget motivation (self-report):** 11/15 reported choosing coal to save budget; 4/15 reported they did not
 
 ### Behavioral placement
 
-- **Coal on wind outlets:** 0/10 sessions placed coal on `outlet` cells
-- **Score range:** 51–88 (*M* ≈ 80.2)
-- **Total carbon range:** 0–1,440 t CO₂e (*M* ≈ 273 t)
+- **Coal on wind outlets:** 0/15 sessions placed coal on `outlet` cells
+- **Score range:** 51–88 (*M* ≈ 76.9)
+- **Total carbon range:** 0–1,440 t CO₂e (*M* ≈ 438 t)
 
 ### Layout patterns
 
-Seven sessions fell in a **lower-carbon band** (0–120 t) with scores of 84–88. Three sessions fell in a **higher-carbon band** (240–1,440 t) with scores of 51–81. The highest-carbon session (1,440 t; score = 51) still avoided outlet siting, consistent with in-game ventilation penalties and correct declarative knowledge.
+Nine sessions fell in a **lower-carbon band** (0–120 t) with scores mostly 84–88. Six sessions fell in a **higher-carbon band** (240–1,440 t) with scores of 51–81.
 
-No inferential tests were conducted for this wave. Pre/post change scores will be reported once the updated consent → pre → play → post deployment accumulates sufficient paired records.
+### Pre/post cognition (subset *n* = 5)
+
+All five pre/post exports scored **3/4** on cognition items both before and after gameplay (mean change = 0). This subset is too small for inferential pre/post tests but confirms the data pipeline works.
+
+No inferential tests were conducted for the full sample.
 
 ---
 
 ## Discussion
 
-Pilot data partially support the hypothesis that a short browser session can elicit accurate ventilation knowledge and avoid the most ventilation-sensitive coal placement, even when most participants report budget pressure. The spread in carbon outcomes (0 vs. 1,440 t) shows that cost-focused strategies can diverge sharply in emissions depending on facility mix—not merely on stated motivation.
+Pilot data partially support the hypothesis that a short browser session can elicit accurate ventilation knowledge and avoid the most ventilation-sensitive coal placement, even when most participants report budget pressure (11/15). The spread in carbon outcomes (0 vs. 1,440 t) shows that cost-focused strategies can diverge sharply in emissions depending on facility mix.
 
-These patterns should be read against clear limits. The microclimate model is heuristic, not predictive CFD. The first *N* = 10 wave lacked embedded pre-tests, so causal claims about “learning gain” cannot yet be made from that subset. Sample size remains small; ongoing recruitment targets 15–20 paired pre/post sessions.
+These patterns should be read against clear limits. The microclimate model is heuristic, not predictive CFD. The sample is *N* = 15 session records—not 15 independently recruited participants; five pre/post exports share one `sessionId` (one tester, multiple playthroughs). Pre/post cognition showed no change (3/4 → 3/4) in the five-export subset. Inferential claims remain exploratory.
 
 Future work should pre-register primary outcomes, complete paired pre/post analysis, and compare alternative advisory conditions. Connecting logged layouts to ventilation literature and serious-game learning mechanisms will clarify whether the artifact mainly assesses declarative understanding or also shifts siting behavior—a question the updated study flow is designed to address.
 

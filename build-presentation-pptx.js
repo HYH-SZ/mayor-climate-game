@@ -137,27 +137,28 @@ const slideContent = {
   ],
   6: [
     "Artifact: Vercel-hosted 12×12 grid game; CNY 10M budget; coal / wind / ground-source heat pump",
-    `Sample: N = ${DATA.total} sessions (7 TXT exports + 3 pilot logs), July 2026, one round each`,
-    "Measures: 2 post-play survey items + final score, carbon (t CO₂e), and layout JSON",
+    `Sample: N = ${DATA.total} sessions (10 earlier + 5 pre/post TXT exports), July 2026`,
+    "Measures: pre/post cognition (4 items) + attitude (2) + gameplay survey + score, carbon, layout JSON",
     "Analysis: descriptive coding from session logs; rule-based microclimate model (not CFD)",
   ],
   7: [
     `${DATA.ventCorrect}/${DATA.total} answered the ventilation item correctly; ${DATA.budgetYes}/${DATA.total} reported choosing coal to save budget`,
     `${DATA.coalOutletSessions}/${DATA.total} placed coal on wind outlets`,
     `Score range ${DATA.scoreRange[0]}–${DATA.scoreRange[1]} (mean ≈ ${DATA.meanScore}); carbon ${DATA.carbonRange[0]}–${DATA.carbonRange[1]} t (mean ≈ ${Math.round(DATA.meanCarbon)})`,
-    "Pattern: lower carbon (0–120 t, n=7) → scores 84–88; higher carbon (240–1440 t, n=3) → scores 51–81",
+    DATA.patterns[3],
+    `Pre/post subset (n=${DATA.prePostSessions}): cognition ${DATA.prePostCognition.preMean}/4 → ${DATA.prePostCognition.postMean}/4 (no change in this subset)`,
     "Live demo: mayor-climate-game.vercel.app",
   ],
   8: [
     "Findings partially support the hypothesis: strong ventilation knowledge; no coal on outlets",
-    "Budget pressure remains salient (8/10), yet 2/10 chose zero-coal wind layouts",
+    `Budget pressure remains salient (${DATA.budgetYes}/${DATA.total}), yet ${DATA.budgetNo}/${DATA.total} chose zero-coal wind layouts`,
     "Carbon outcomes vary sharply by facility mix—not by stated budget motivation alone",
     "Short browser sessions can make cost–carbon–ventilation tradeoffs visible to learners",
   ],
   9: [
     "Answer to RQ: the game supports declarative ventilation understanding and safer siting behavior",
-    "Limitations: N=10, simplified rule-based model, exploratory pilot—not confirmatory evidence",
-    "Future work: pre-register outcomes, expand sample size, test alternative advisory conditions",
+    `Limitations: N=${DATA.total}, simplified rule-based model, exploratory pilot—not confirmatory evidence`,
+    "Future work: pre-register outcomes, expand independent participants, test advisory conditions",
   ],
   10: [
     "IEA (2023). Staying Cool / Sustainable Cooling outlook reports.",
@@ -175,9 +176,9 @@ const slideFooterNotes = {
   4: "Takeaway: Cities must balance cheap energy, low carbon, and good airflow. Professional CFD tools are powerful but too hard for beginners; this game makes tradeoffs visible through play.",
   5: "Takeaway: Cooling demand is rising and ventilation corridors matter, yet few classroom-ready browser tools combine playable simulation, live metrics, and automatic research logging.",
   6: `Takeaway: N = ${DATA.total} one-round sessions (July 2026). Players placed facilities on a 12×12 grid; we logged scores, carbon totals, survey answers, and full layout JSON for each session.`,
-  7: `Takeaway: ${DATA.ventCorrect}/${DATA.total} answered ventilation correctly; ${DATA.coalOutletSessions}/${DATA.total} blocked outlets. Carbon ranged ${DATA.carbonRange[0]}–${DATA.carbonRange[1]} t—clean layouts scored 84–88; heavy-coal layouts scored 51–81.`,
-  8: "Takeaway: Budget pressure was common (8/10), but facility mix—not stated motivation alone—drove carbon outcomes. Short browser play can teach tradeoffs textbooks alone cannot show.",
-  9: "Takeaway: The pilot supports ventilation learning and safer siting, but N=10 limits generalization. Next: pre-register outcomes, expand the sample, and test advisory conditions.",
+  7: `Takeaway: ${DATA.ventCorrect}/${DATA.total} answered ventilation correctly; ${DATA.coalOutletSessions}/${DATA.total} blocked outlets. Carbon ${DATA.carbonRange[0]}–${DATA.carbonRange[1]} t. Pre/post n=${DATA.prePostSessions}: cognition stayed 3/4.`,
+  8: `Takeaway: Budget pressure common (${DATA.budgetYes}/${DATA.total}), but facility mix drives emissions. ${DATA.budgetNo}/${DATA.total} chose zero-coal layouts.`,
+  9: `Takeaway: Pilot supports ventilation learning and safer siting; N=${DATA.total} exploratory sessions. Pre/post flow now live for future waves.`,
   10: "Takeaway: References cover sustainable cooling, urban ventilation planning, and serious-game methods. Full bibliography and paper: github.com/HYH-SZ/mayor-climate-game.",
   11: "Thank you for your attention. I welcome questions about the live demo (mayor-climate-game.vercel.app), data collection, or plans for a larger study.",
 };
@@ -185,7 +186,7 @@ const slideFooterNotes = {
 const slideSpeakerNotes = {
   1: [
     "This slide is template instructions only—delete it before you submit the deck.",
-    "The presentation covers Mayor Climate Game: a browser-based serious game for teaching urban energy layout and ventilation tradeoffs, based on N=10 pilot sessions collected in July 2026.",
+    `The presentation covers Mayor Climate Game, based on N=${DATA.total} pilot sessions collected in July 2026 (including ${DATA.prePostSessions} pre/post exports).`,
   ],
   3: [
     "This slide introduces the research scope and main question.",
@@ -207,8 +208,8 @@ const slideSpeakerNotes = {
   ],
   6: [
     "The artifact is deployed on Vercel: a 12×12 grid, CNY 10 million budget, and three facility types (coal, wind, ground-source heat pump).",
-    `Sample: N = ${DATA.total} sessions—seven exported TXT reports plus three earlier pilot logs—each participant played one round in July 2026.`,
-    "Measures: two post-play survey items, final score, total carbon (tonnes CO₂e), and the full facility layout saved as JSON.",
+    `Sample: N = ${DATA.total} sessions—10 earlier exports plus 5 pre/post TXT reports—in July 2026.`,
+    "Measures: pre/post cognition and attitude items, gameplay survey, score, carbon, and layout JSON.",
     "Analysis is descriptive. The in-game microclimate model uses rule-based heuristics, not full CFD simulation.",
   ],
   7: [
@@ -216,7 +217,8 @@ const slideSpeakerNotes = {
     `${DATA.budgetYes} of ${DATA.total} reported choosing coal to save budget; ${DATA.budgetNo} chose zero-coal wind layouts instead.`,
     `${DATA.coalOutletSessions} of ${DATA.total} placed coal on wind outlets—none did.`,
     `Scores ranged ${DATA.scoreRange[0]}–${DATA.scoreRange[1]} (mean ≈ ${DATA.meanScore}); carbon ${DATA.carbonRange[0]}–${DATA.carbonRange[1]} t (mean ≈ ${Math.round(DATA.meanCarbon)}).`,
-    "Pattern: lower carbon (0–120 t, n=7) co-occurred with scores 84–88; higher carbon (240–1440 t, n=3) with scores 51–81.",
+    DATA.patterns[3],
+    `Pre/post subset (n=${DATA.prePostSessions}): mean cognition ${DATA.prePostCognition.preMean} → ${DATA.prePostCognition.postMean} (no change).`,
     "Live demo: mayor-climate-game.vercel.app",
   ],
   8: [
@@ -227,7 +229,7 @@ const slideSpeakerNotes = {
   ],
   9: [
     "Answer to the research question: the game supports declarative ventilation understanding and safer siting behavior in this pilot.",
-    "Limitations: N=10, simplified rule-based model, exploratory design—not confirmatory statistical evidence.",
+    `Limitations: N=${DATA.total}, simplified rule-based model, exploratory design—not confirmatory statistical evidence.`,
     "Future work: pre-register outcomes, expand sample size, and test alternative in-game advisory messages.",
   ],
   10: [
