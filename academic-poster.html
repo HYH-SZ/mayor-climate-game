@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mayor Climate Game · Academic Poster</title>
+  <style>
+    @page { size: A0 portrait; margin: 12mm; }
+
+    :root {
+      --ink: #1a1a1a;
+      --muted: #444;
+      --accent: #0d4f6e;
+      --accent-light: #e8f2f6;
+      --highlight: #c45c26;
+      --border: #c8c8c8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Times New Roman", Times, "SimSun", "宋体", serif;
+      color: var(--ink);
+      background: #888;
+      line-height: 1.45;
+    }
+
+    .poster {
+      width: 841mm;
+      min-height: 1189mm;
+      margin: 0 auto;
+      background: #fff;
+      padding: 14mm 16mm 16mm;
+      display: flex;
+      flex-direction: column;
+      gap: 8mm;
+    }
+
+    .header {
+      border-bottom: 4px solid var(--accent);
+      padding-bottom: 6mm;
+    }
+
+    .header h1 {
+      font-size: 54pt;
+      font-weight: 700;
+      line-height: 1.08;
+      color: var(--accent);
+    }
+
+    .header .subtitle {
+      font-size: 28pt;
+      color: var(--muted);
+      margin-top: 3mm;
+      font-family: "SimSun", "宋体", serif;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 5mm;
+      font-size: 22pt;
+    }
+
+    .meta .author { font-weight: 700; }
+    .meta .affil { color: var(--muted); text-align: right; }
+
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 5mm;
+      flex: 1;
+      align-items: start;
+    }
+
+    .col { display: flex; flex-direction: column; gap: 6mm; }
+
+    .section {
+      border: 1px solid var(--border);
+      padding: 5mm 5.5mm;
+    }
+
+    .section.accent-bg { background: var(--accent-light); border-color: #b8d4e0; }
+
+    .section h2 {
+      font-size: 30pt;
+      font-weight: 700;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 2mm;
+      margin-bottom: 3.5mm;
+      font-family: "SimSun", "宋体", serif;
+    }
+
+    .section h2 .en {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 26pt;
+    }
+
+    .section p, .section li { font-size: 22pt; margin-bottom: 2.5mm; text-align: justify; }
+    .section ul, .section ol { padding-left: 7mm; }
+    .section li { margin-bottom: 2mm; }
+    .section strong { color: var(--accent); }
+
+    .rq-box {
+      background: var(--accent);
+      color: #fff;
+      padding: 4mm 5mm;
+      font-size: 21pt;
+      border: none;
+    }
+
+    .rq-box h2 { color: #fff; border-bottom-color: rgba(255,255,255,.45); font-size: 26pt; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 3mm;
+      margin: 3mm 0;
+    }
+
+    .stat-box {
+      text-align: center;
+      background: #fff;
+      border: 2px solid var(--accent);
+      padding: 3mm 2mm;
+    }
+
+    .stat-box .num { font-size: 36pt; font-weight: 700; color: var(--accent); line-height: 1; }
+    .stat-box .lbl { font-size: 16pt; color: var(--muted); margin-top: 1.5mm; }
+
+    .bar-chart { margin: 4mm 0; }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 28mm 1fr 22mm;
+      align-items: center;
+      gap: 3mm;
+      margin-bottom: 3mm;
+      font-size: 18pt;
+    }
+
+    .bar-track { height: 10mm; background: #e8e8e8; }
+    .bar-fill { height: 100%; background: var(--accent); }
+    .bar-fill.alt { background: var(--highlight); }
+    .bar-val { font-weight: 700; font-size: 20pt; text-align: right; }
+
+    .flow { display: flex; flex-direction: column; gap: 2.5mm; }
+
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 3mm;
+      font-size: 20pt;
+    }
+
+    .flow-num {
+      flex-shrink: 0;
+      width: 9mm;
+      height: 9mm;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 18pt;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .game-preview { border: 2px solid var(--accent); padding: 3mm; background: #f7fafb; }
+
+    .game-preview .caption {
+      font-size: 16pt;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 2mm;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1px;
+      max-height: 65mm;
+      margin: 0 auto;
+    }
+
+    .mini-grid span { aspect-ratio: 1; }
+
+    .cell-n { background: #d4e8d4; }
+    .cell-r { background: #f0dcc8; }
+    .cell-c { background: #c8e0f0; }
+    .cell-o { background: #a8d4f0; }
+    .cell-b { background: #d0c8b8; }
+    .cell-coal { background: #555; }
+    .cell-wind { background: #6aab6a; }
+    .cell-hp { background: #4a90a4; }
+
+    .footer {
+      border-top: 3px solid var(--accent);
+      padding-top: 4mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 18pt;
+      color: var(--muted);
+    }
+
+    .footer a { color: var(--accent); text-decoration: none; font-weight: 700; }
+
+    .qr-block { display: flex; align-items: center; gap: 4mm; }
+    .qr-block img { width: 28mm; height: 28mm; border: 1px solid var(--border); }
+
+    .limit-note {
+      font-size: 18pt;
+      color: var(--highlight);
+      font-style: italic;
+      margin-top: 2mm;
+    }
+
+    @media screen and (max-width: 900px) {
+      body { background: #fff; }
+      .poster { width: 100%; min-height: auto; padding: 16px; }
+      .header h1 { font-size: 28pt; }
+      .columns { grid-template-columns: 1fr; }
+      .section p, .section li { font-size: 14pt; }
+    }
+
+    @media print { body { background: #fff; } }
+  </style>
+</head>
+<body>
+  <article class="poster">
+
+    <header class="header">
+      <h1>Mayor Climate Game</h1>
+      <p class="subtitle">用浏览器游戏理解城市能源—碳排—通风权衡</p>
+      <div class="meta">
+        <span class="author">Hu Yunhan</span>
+        <span class="affil">Generation AI 2026 · July 2026 Pilot</span>
+      </div>
+    </header>
+
+    <div class="columns">
+
+      <div class="col">
+        <section class="section">
+          <h2>课题简介 <span class="en">Introduction</span></h2>
+          <p>Cities need energy choices balancing <strong>cost, carbon, and ventilation</strong>. Professional CFD/WRF tools are powerful but hard for learners. <em>Mayor Climate Game</em> is a browser serious game: allocate CNY&nbsp;10M across coal, wind, and heat pumps on a 12×12 terrain grid with live metrics.</p>
+        </section>
+
+        <section class="section accent-bg">
+          <h2>研究意义 <span class="en">Significance</span></h2>
+          <ul>
+            <li>Makes tradeoffs <strong>visible</strong> without simulation infrastructure.</li>
+            <li>Auto-logs layout choices for small-scale classroom research.</li>
+            <li>Complements—not replaces—professional urban-climate models.</li>
+          </ul>
+        </section>
+
+        <section class="section rq-box">
+          <h2>研究问题 Research Question</h2>
+          <p>How does the game shape facility choices and post-play understanding of budget–carbon–ventilation tradeoffs?</p>
+          <p style="margin-top:3mm;"><strong>Hypothesis:</strong> Participants avoid coal on ventilation-sensitive cells and answer the ventilation rule correctly after one round.</p>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="section">
+          <h2>研究方法 <span class="en">Methods</span></h2>
+          <ul>
+            <li><strong>Pilot:</strong> N&nbsp;=&nbsp;3 volunteers, July 2026, one round each.</li>
+            <li><strong>Measures:</strong> 2 survey items (budget motivation; ventilation rule) + logged score, carbon (t CO₂e), placements.</li>
+            <li><strong>Analysis:</strong> Descriptive coding from Supabase; no inferential tests.</li>
+            <li><strong>Boundary:</strong> Rule-based heuristics, not CFD.</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>研究及实践过程 <span class="en">Process</span></h2>
+          <div class="flow">
+            <div class="flow-step"><span class="flow-num">1</span><span>Deploy web app (Vercel); 12×12 grid with corridor &amp; outlet terrain.</span></div>
+            <div class="flow-step"><span class="flow-num">2</span><span>3 volunteers play one round with live score &amp; mission bar.</span></div>
+            <div class="flow-step"><span class="flow-num">3</span><span>Post-play survey + TXT export; 3 sessions stored in Supabase.</span></div>
+            <div class="flow-step"><span class="flow-num">4</span><span>Compare 2 unique layouts; flag coal on outlets.</span></div>
+          </div>
+        </section>
+
+        <section class="section game-preview">
+          <h2>研究原型 <span class="en">Artifact</span></h2>
+          <div class="mini-grid" aria-label="Schematic game grid">
+            <span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span>
+            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-c"></span><span class="cell-o"></span><span class="cell-r"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-r"></span><span class="cell-o"></span><span class="cell-c"></span><span class="cell-r"></span><span class="cell-n"></span>
+            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-wind"></span><span class="cell-c"></span><span class="cell-r"></span><span class="cell-coal"></span><span class="cell-coal"></span><span class="cell-r"></span><span class="cell-c"></span><span class="cell-hp"></span><span class="cell-r"></span><span class="cell-n"></span>
+            <span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span>
+            <span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span>
+            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-wind"></span><span class="cell-b"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-b"></span><span class="cell-hp"></span><span class="cell-r"></span><span class="cell-n"></span>
+            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-coal"></span><span class="cell-b"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-b"></span><span class="cell-wind"></span><span class="cell-r"></span><span class="cell-n"></span>
+            <span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span>
+            <span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span>
+            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-hp"></span><span class="cell-c"></span><span class="cell-r"></span><span class="cell-coal"></span><span class="cell-wind"></span><span class="cell-r"></span><span class="cell-c"></span><span class="cell-coal"></span><span class="cell-r"></span><span class="cell-n"></span>
+            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-c"></span><span class="cell-o"></span><span class="cell-r"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-r"></span><span class="cell-o"></span><span class="cell-c"></span><span class="cell-r"></span><span class="cell-n"></span>
+            <span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span>
+          </div>
+          <p class="caption">示意网格（非 pilot 真实布局）</p>
+        </section>
+      </div>
+
+      <div class="col">
+        <section class="section">
+          <h2>研究结果 <span class="en">Results</span></h2>
+          <p>3 sessions, 2 unique layouts (July 2026).</p>
+          <div class="stat-grid">
+            <div class="stat-box"><div class="num">3/3</div><div class="lbl">Ventilation correct</div></div>
+            <div class="stat-box"><div class="num">3/3</div><div class="lbl">Budget = yes</div></div>
+            <div class="stat-box"><div class="num">0/3</div><div class="lbl">Coal on outlets</div></div>
+          </div>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <span>Layout 1 (n=2)</span>
+              <div class="bar-track"><div class="bar-fill" style="width:20%"></div></div>
+              <span class="bar-val">120 t · 84</span>
+            </div>
+            <div class="bar-row">
+              <span>Layout 2 (n=1)</span>
+              <div class="bar-track"><div class="bar-fill alt" style="width:100%"></div></div>
+              <span class="bar-val">600 t · 70</span>
+            </div>
+          </div>
+          <p><small>Bar width = carbon (t CO₂e); numbers = composite score.</small></p>
+        </section>
+
+        <section class="section accent-bg">
+          <h2>结论 <span class="en">Conclusions</span></h2>
+          <ol>
+            <li><strong>Partial support:</strong> accurate ventilation knowledge; no coal on outlets.</li>
+            <li>All cited <strong>budget pressure</strong> for coal (3/3).</li>
+            <li>Carbon gap (120 vs. 600 t) shows cost strategies can diverge sharply in emissions.</li>
+          </ol>
+          <p class="limit-note"><strong>Limitation:</strong> N=3; exploratory pilot; simplified model—not confirmatory evidence.</p>
+        </section>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div>
+        <a href="https://mayor-climate-game.vercel.app" target="_blank" rel="noopener">mayor-climate-game.vercel.app</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/HYH-SZ/mayor-climate-game" target="_blank" rel="noopener">Paper &amp; Code</a>
+      </div>
+      <div class="qr-block">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&amp;data=https%3A%2F%2Fmayor-climate-game.vercel.app" width="200" height="200" alt="QR code">
+        <span>Scan to play</span>
+      </div>
+    </footer>
+
+  </article>
+</body>
+</html>
