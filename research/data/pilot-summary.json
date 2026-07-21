@@ -1,9 +1,30 @@
 {
+  "source": "7 TXT exports (2026-07-21) + 3 Supabase pilot sessions (July 2026, main.tex)",
   "total": 10,
-  "note": "Session count confirmed by author. Run node scripts/analyze-results.mjs locally to fill ventCorrect, budgetYes, coalOutletSessions, and layoutStats from Supabase.",
-  "ventCorrect": null,
-  "budgetYes": null,
-  "coalOutletSessions": null,
-  "uniqueLayouts": null,
-  "layoutStats": []
+  "ventCorrect": 10,
+  "budgetYes": 8,
+  "budgetNo": 2,
+  "coalOutletSessions": 0,
+  "scoreRange": [51, 88],
+  "carbonRange": [0, 1440],
+  "meanScore": 80.2,
+  "meanCarbon": 272.5,
+  "sessions": [
+    { "source": "txt-1", "score": 88, "carbon": 0, "budgetYes": true, "ventCorrect": true },
+    { "source": "txt-2", "score": 51, "carbon": 1440, "budgetYes": true, "ventCorrect": true },
+    { "source": "txt-3", "score": 85, "carbon": 90, "budgetYes": true, "ventCorrect": true },
+    { "source": "txt-4", "score": 84, "carbon": 120, "budgetYes": true, "ventCorrect": true },
+    { "source": "txt-5", "score": 81, "carbon": 240, "budgetYes": true, "ventCorrect": true },
+    { "source": "txt-6", "score": 87, "carbon": 15, "budgetYes": false, "ventCorrect": true },
+    { "source": "txt-7", "score": 88, "carbon": 0, "budgetYes": false, "ventCorrect": true },
+    { "source": "pilot-1", "score": 84, "carbon": 120, "budgetYes": true, "ventCorrect": true, "note": "Layout 1, session 1" },
+    { "source": "pilot-2", "score": 84, "carbon": 120, "budgetYes": true, "ventCorrect": true, "note": "Layout 1, session 2" },
+    { "source": "pilot-3", "score": 70, "carbon": 600, "budgetYes": true, "ventCorrect": true, "note": "Layout 2" }
+  ],
+  "patterns": [
+    "10/10 answered ventilation item correctly",
+    "8/10 reported choosing coal to save budget; 2/10 said no",
+    "0/10 placed coal on wind outlets",
+    "Low carbon (0–120 t, n=7): scores 84–88; high carbon (240–1440 t, n=3): scores 51–81"
+  ]
 }
