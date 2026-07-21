@@ -6,6 +6,20 @@ Mayor Climate Simulation Game is a browser-based MVP about urban microclimate, e
 
 https://mayor-climate-game.vercel.app
 
+## Study Flow (Issue #11)
+
+The live site now follows a research-ready sequence:
+
+1. **Informed consent** — anonymous, voluntary participation explained on the first screen
+2. **Pre-test** — four cognition items + two attitude items (stored with a unique `sessionId`)
+3. **Gameplay** — one round on the 12×12 grid with live metrics
+4. **Post-test** — same cognition/attitude items plus gameplay-specific questions
+5. **Submit** — full session (pre + post + layout) saved to Supabase and downloadable as TXT
+
+Pre-test rows are inserted when the participant starts the game; the same row is updated when the session is completed.
+
+See `docs/issue-11-12-response.md` for how GitHub issues #11 and #12 were addressed.
+
 ## What It Does
 
 The game asks a simple social science question: when students can see the climate cost of their choices, will they still choose the cheapest high-carbon option?
@@ -15,10 +29,10 @@ Players choose between coal power, wind power, and ground-source heat pumps. The
 ## How To Play
 
 1. Open `index.html` locally or visit the Vercel link above.
-2. Choose one facility from the left panel.
-3. Click a cell on the map to place it.
-4. Watch the temperature, wind, and carbon indicators change.
-5. Click finish, answer two short questions, and download the TXT report or JSON result.
+2. Read and accept the consent screen.
+3. Complete the **pre-test** questionnaire.
+4. Choose a facility, click the map to place it, and watch indicators update.
+5. Click **Finish**, complete the **post-test**, and download the TXT report (data also saves to Supabase when configured).
 
 ## Week 5 Backend and AI
 
@@ -44,6 +58,10 @@ Create the Supabase table by running the SQL in:
 After setup, user results are stored in Supabase table:
 
 `public.game_results`
+
+Columns include `session_id`, `study_phase` (`pre` or `complete`), `pre_survey`, `post_survey`, `layout`, and `metrics`.
+
+If upgrading an existing Supabase project, run the migration comments at the bottom of `supabase/schema.sql`.
 
 ## Week 3 Deliverables
 

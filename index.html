@@ -949,10 +949,67 @@
 
     .dialog {
       width: min(520px, 100%);
+      max-height: min(88vh, 900px);
+      overflow: auto;
       padding: 24px;
       border-radius: 18px;
       background: #fff;
       box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
+    }
+
+    .dialog.wide {
+      width: min(720px, 100%);
+    }
+
+    .consent-copy {
+      margin: 12px 0 0;
+      color: #526579;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .consent-copy ul {
+      margin: 10px 0 0 18px;
+      padding: 0;
+    }
+
+    .consent-copy li {
+      margin: 6px 0;
+    }
+
+    .choice-opts label {
+      display: block;
+      margin: 6px 0;
+      color: #526579;
+      font-size: 14px;
+    }
+
+    .study-locked {
+      pointer-events: none;
+      user-select: none;
+      filter: blur(1px);
+      opacity: 0.35;
+    }
+
+    .phase-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #146ec2;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .dialog h3 {
+      margin: 18px 0 8px;
+      font-size: 15px;
+      color: #35516d;
     }
 
     .dialog h2 {
@@ -1092,7 +1149,40 @@
   </style>
 </head>
 <body>
-  <div class="page">
+  <div class="modal" id="consent-modal">
+    <div class="dialog wide">
+      <span class="phase-badge">Research consent</span>
+      <h2>研究参与说明</h2>
+      <div class="consent-copy">
+        <p>欢迎参与 <strong>市长气候模拟游戏</strong> 用户研究。本研究由 Generation AI 2026 课程进行，用于了解浏览器严肃游戏如何影响参与者对城市能源布局、碳排放与通风权衡的理解。</p>
+        <ul>
+          <li><strong>匿名参与：</strong>不收集姓名、学号或联系方式。</li>
+          <li><strong>自愿参加：</strong>你可以随时关闭页面退出，无需说明理由。</li>
+          <li><strong>数据用途：</strong>答题与游戏记录仅用于本课程论文分析，不会用于商业用途。</li>
+          <li><strong>数据保存：</strong>匿名记录会保存到研究者数据库（Supabase），并可在你的设备上下载 TXT 报告。</li>
+        </ul>
+        <p>点击「我同意参与」后，会先完成<strong>前测问卷</strong>，再进入游戏；游戏结束后会完成<strong>后测问卷</strong>（题目相同，用于比较前后变化）。</p>
+      </div>
+      <div class="dialog-actions">
+        <button class="action-btn" id="consent-decline" type="button">不同意，退出</button>
+        <button class="action-btn primary" id="consent-agree" type="button">我同意参与</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="pre-modal">
+    <div class="dialog wide">
+      <span class="phase-badge">Pre-test · 前测</span>
+      <h2>游戏前问卷</h2>
+      <p class="helper">请先回答以下问题，再开始游戏。本页题目会在游戏结束后再次出现。</p>
+      <form id="pre-survey"></form>
+      <div class="dialog-actions">
+        <button class="action-btn primary" id="pre-submit" type="button">提交前测并开始游戏</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page study-locked" id="app-root">
     <header class="hero">
       <div class="brand">
         <div class="planet" aria-hidden="true"></div>
@@ -1190,31 +1280,22 @@
   </div>
 
   <div class="modal hidden" id="modal">
-    <div class="dialog">
-      <h2>反馈问卷</h2>
-      <p class="helper">数据只会下载到你的电脑，不会上传到服务器。</p>
-      <form id="survey">
-        <div class="question">
-          <strong>1. 你是否为了节省预算而选择煤电？</strong>
-          <label><input type="radio" name="budgetChoice" value="yes" required> 是</label>
-          <label><input type="radio" name="budgetChoice" value="no"> 否</label>
-        </div>
-        <div class="question">
-          <strong>2. 在风口放置煤电会降低全城通风。</strong>
-          <label><input type="radio" name="windUnderstanding" value="true" required> 正确</label>
-          <label><input type="radio" name="windUnderstanding" value="false"> 错误</label>
-        </div>
-      </form>
-      <div class="server-status" id="server-status">提交问卷后，系统会尝试把本局数据保存到 Supabase；如果后台暂未配置，仍可下载本地报告。</div>
+    <div class="dialog wide">
+      <span class="phase-badge">Post-test · 后测</span>
+      <h2>游戏后问卷</h2>
+      <p class="helper">请再次回答与前测相同的认知与态度题目，并补充本局体验相关问题。提交后系统会保存到 Supabase，并可下载 TXT 报告。</p>
+      <form id="survey"></form>
+      <div class="server-status" id="server-status">提交后，系统会尝试把本局数据（含前测与后测）保存到 Supabase；若后台暂未配置，仍可下载本地报告。</div>
       <div class="ai-result" id="ai-result">需要 AI 帮你解释本局结果时，可以点击“生成 AI 总结”。</div>
       <div class="dialog-actions">
         <button class="action-btn" id="close-modal" type="button">返回修改</button>
         <button class="action-btn" id="generate-ai" type="button">生成 AI 总结</button>
-        <button class="action-btn primary" id="download-txt" type="button">下载 TXT 报告</button>
+        <button class="action-btn primary" id="download-txt" type="button">提交并下载 TXT 报告</button>
       </div>
     </div>
   </div>
 
+  <script src="js/instrument.js"></script>
   <script>
     const terrains = {
       normal: { name: "普通区", color: "#e7edf3", wind: 1, mark: "" },
@@ -1299,7 +1380,81 @@
       aiSummary: ""
     };
 
+    const studyState = {
+      sessionId: crypto.randomUUID(),
+      consentedAt: null,
+      preSurvey: null,
+      postSurvey: null,
+      phase: "consent"
+    };
+
+    const PRE_QUESTIONS = [...STUDY_INSTRUMENT.cognition, ...STUDY_INSTRUMENT.attitude];
+    const POST_REPEAT_QUESTIONS = PRE_QUESTIONS;
+    const POST_EXTRA_QUESTIONS = [
+      ...STUDY_INSTRUMENT.gameplay,
+      ...STUDY_INSTRUMENT.decision,
+      ...STUDY_INSTRUMENT.open
+    ];
+
     const $ = selector => document.querySelector(selector);
+
+    function buildPreSurveyForm() {
+      const form = $("#pre-survey");
+      form.innerHTML = "";
+      buildSurveySection(form, "一、认知测试", STUDY_INSTRUMENT.cognition);
+      buildSurveySection(form, "二、态度量表", STUDY_INSTRUMENT.attitude);
+    }
+
+    function buildPostSurveyForm() {
+      const form = $("#survey");
+      form.innerHTML = "";
+      buildSurveySection(form, "一、认知测试（后测）", STUDY_INSTRUMENT.cognition, "post_");
+      buildSurveySection(form, "二、态度量表（后测）", STUDY_INSTRUMENT.attitude, "post_");
+      buildSurveySection(form, "三、本局决策体验", STUDY_INSTRUMENT.gameplay);
+      buildSurveySection(form, "四、决策倾向", STUDY_INSTRUMENT.decision);
+      buildSurveySection(form, "五、开放题", STUDY_INSTRUMENT.open);
+    }
+
+    function unlockGame() {
+      studyState.phase = "game";
+      $("#app-root").classList.remove("study-locked");
+      $("#consent-modal").classList.add("hidden");
+      $("#pre-modal").classList.add("hidden");
+    }
+
+    function collectPreSurvey() {
+      const form = $("#pre-survey");
+      if (!form.reportValidity()) return null;
+      const cognition = collectSurveyAnswers(form, STUDY_INSTRUMENT.cognition);
+      const attitude = collectSurveyAnswers(form, STUDY_INSTRUMENT.attitude);
+      return {
+        cognition,
+        attitude,
+        cognitionScore: scoreCognition(cognition),
+        cognitionTotal: STUDY_INSTRUMENT.cognition.length,
+        completedAt: new Date().toISOString()
+      };
+    }
+
+    function collectPostSurvey() {
+      const form = $("#survey");
+      if (!form.reportValidity()) return null;
+      const cognition = collectSurveyAnswers(form, STUDY_INSTRUMENT.cognition, "post_");
+      const attitude = collectSurveyAnswers(form, STUDY_INSTRUMENT.attitude, "post_");
+      const gameplay = collectSurveyAnswers(form, STUDY_INSTRUMENT.gameplay);
+      const decision = collectSurveyAnswers(form, STUDY_INSTRUMENT.decision);
+      const open = collectSurveyAnswers(form, STUDY_INSTRUMENT.open);
+      return {
+        cognition,
+        attitude,
+        gameplay,
+        decision,
+        open,
+        cognitionScore: scoreCognition(cognition),
+        cognitionTotal: STUDY_INSTRUMENT.cognition.length,
+        completedAt: new Date().toISOString()
+      };
+    }
 
     function renderFacilities() {
       $("#facility-list").innerHTML = Object.entries(facilities).map(([key, facility]) => `
@@ -1678,21 +1833,53 @@
     }
 
     function getSurveyAnswers() {
-      const form = $("#survey");
-      if (!form.reportValidity()) return;
-      return Object.fromEntries(new FormData(form).entries());
+      return collectPostSurvey();
     }
 
-    function buildResultData(survey) {
+    function buildResultData(postSurvey) {
+      const legacySurvey = {
+        budgetChoice: postSurvey.gameplay.budgetChoice,
+        windUnderstanding: postSurvey.gameplay.windUnderstanding,
+        ...flattenSurveyBlocks({
+          cognition: postSurvey.cognition,
+          attitude: postSurvey.attitude,
+          decision: postSurvey.decision,
+          open: postSurvey.open
+        })
+      };
+
       return {
         project: "市长气候模拟游戏",
+        sessionId: studyState.sessionId,
+        studyPhase: "complete",
         timestamp: new Date().toISOString(),
+        consentedAt: studyState.consentedAt,
+        preSurvey: studyState.preSurvey,
+        postSurvey,
         budgetUsed: 1000 - state.budget,
         score: getScore(),
         metrics: state.metrics,
         layout: getLayout(),
-        survey,
+        survey: legacySurvey,
         aiSummary: state.aiSummary
+      };
+    }
+
+    function buildPrePayload(preSurvey) {
+      return {
+        project: "市长气候模拟游戏",
+        sessionId: studyState.sessionId,
+        studyPhase: "pre",
+        timestamp: new Date().toISOString(),
+        consentedAt: studyState.consentedAt,
+        preSurvey,
+        postSurvey: null,
+        budgetUsed: 0,
+        score: null,
+        metrics: {},
+        layout: [],
+        survey: {},
+        aiSummary: ""
       };
     }
 
@@ -1723,12 +1910,12 @@
     }
 
     async function generateAiSummary() {
-      const survey = getSurveyAnswers();
-      if (!survey) return;
+      const postSurvey = getSurveyAnswers();
+      if (!postSurvey) return;
 
       const button = $("#generate-ai");
       const resultBox = $("#ai-result");
-      const data = buildResultData(survey);
+      const data = buildResultData(postSurvey);
       button.disabled = true;
       resultBox.textContent = "AI 正在分析本局布局……";
 
@@ -1774,18 +1961,24 @@
         basin: "低洼盆地"
       };
       const surveyText = {
-        budgetChoice: data.survey.budgetChoice === "yes" ? "是" : "否",
-        windUnderstanding: data.survey.windUnderstanding === "true" ? "正确" : "错误"
+        budgetChoice: data.postSurvey.gameplay.budgetChoice === "yes" ? "是" : "否",
+        windUnderstanding: data.postSurvey.gameplay.windUnderstanding === "true" ? "正确" : "错误"
       };
+      const preScore = data.preSurvey?.cognitionScore ?? "—";
+      const postScore = data.postSurvey?.cognitionScore ?? "—";
       const layoutText = data.layout.length
         ? data.layout.map((item, index) => `${index + 1}. ${facilityNames[item.facility]}：第 ${item.y + 1} 行，第 ${item.x + 1} 列（${terrainNames[item.terrain]}）`).join("\n")
         : "没有放置任何设施";
 
       return `市长气候模拟游戏 - 本局结果
 
+会话 ID：${data.sessionId}
 生成时间：${new Date(data.timestamp).toLocaleString("zh-CN")}
 本局评分：${data.score} 分
 已使用预算：${data.budgetUsed} 万元
+
+前测认知得分：${preScore} / ${data.preSurvey?.cognitionTotal ?? 4}
+后测认知得分：${postScore} / ${data.postSurvey?.cognitionTotal ?? 4}
 
 实时指标
 - 平均温度：${data.metrics.temp} °C
@@ -1802,20 +1995,45 @@ ${layoutText}
 AI 总结
 ${data.aiSummary || "尚未生成 AI 总结。"}
 
-说明：本报告可直接查看本局结果。`;
+说明：本报告含前测/后测与游戏记录，可用于课程研究分析。`;
     }
 
     async function downloadReadableResult() {
-      const survey = getSurveyAnswers();
-      if (!survey) return;
-      const data = buildResultData(survey);
+      const postSurvey = getSurveyAnswers();
+      if (!postSurvey) return;
+      studyState.postSurvey = postSurvey;
+      const data = buildResultData(postSurvey);
       await submitResultToSupabase(data);
-      downloadFile("市长气候模拟游戏-结果报告.txt", formatReadableReport(data), "text/plain;charset=utf-8");
+      downloadFile(`市长气候模拟游戏-结果报告-${data.sessionId.slice(0, 8)}.txt`, formatReadableReport(data), "text/plain;charset=utf-8");
       $("#modal").classList.add("hidden");
     }
 
+    $("#consent-decline").addEventListener("click", () => {
+      window.location.href = "about:blank";
+    });
+
+    $("#consent-agree").addEventListener("click", () => {
+      studyState.consentedAt = new Date().toISOString();
+      studyState.phase = "pre";
+      $("#consent-modal").classList.add("hidden");
+      $("#pre-modal").classList.remove("hidden");
+    });
+
+    $("#pre-submit").addEventListener("click", async () => {
+      const preSurvey = collectPreSurvey();
+      if (!preSurvey) return;
+      studyState.preSurvey = preSurvey;
+      await submitResultToSupabase(buildPrePayload(preSurvey));
+      unlockGame();
+    });
+
     $("#finish").addEventListener("click", () => {
+      if (studyState.phase !== "game" || !studyState.preSurvey) {
+        alert("请先完成知情同意与前测问卷，再开始游戏。");
+        return;
+      }
       calculateMetrics();
+      buildPostSurveyForm();
       $("#modal").classList.remove("hidden");
     });
 
@@ -1834,6 +2052,8 @@ ${data.aiSummary || "尚未生成 AI 总结。"}
     $("#download-txt").addEventListener("click", downloadReadableResult);
     $("#generate-ai").addEventListener("click", generateAiSummary);
 
+    buildPreSurveyForm();
+    buildPostSurveyForm();
     renderFacilities();
     renderAxes();
     renderLegend();
