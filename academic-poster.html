@@ -168,33 +168,225 @@
       justify-content: center;
     }
 
-    .game-preview { border: 2px solid var(--accent); padding: 3mm; background: #f7fafb; }
-
-    .game-preview .caption {
-      font-size: 16pt;
-      color: var(--muted);
-      text-align: center;
-      margin-top: 2mm;
+    .artifact-frame {
+      border: 2px solid #123052;
+      overflow: hidden;
+      background: #eef3f8;
+      font-family: "Microsoft YaHei UI", "SimSun", "宋体", sans-serif;
     }
 
-    .mini-grid {
+    .artifact-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 3mm;
+      padding: 2mm 3.5mm;
+      background: linear-gradient(180deg, #edf2f7 0%, #dde6ef 100%);
+      border-bottom: 1px solid #b8c6d4;
+      font-size: 13pt;
+      color: #3d5568;
+    }
+
+    .artifact-dots { display: flex; gap: 1.8mm; }
+    .artifact-dots i {
+      width: 3.2mm; height: 3.2mm; border-radius: 50%; display: block;
+    }
+    .artifact-dots i:nth-child(1) { background: #ff6058; }
+    .artifact-dots i:nth-child(2) { background: #ffbd2e; }
+    .artifact-dots i:nth-child(3) { background: #28c840; }
+
+    .artifact-url {
+      flex: 1;
+      text-align: center;
+      background: #fff;
+      border: 1px solid #c5d0db;
+      border-radius: 2mm;
+      padding: 1mm 2mm;
+      font-size: 12pt;
+      color: #567;
+    }
+
+    .artifact-body {
+      display: grid;
+      grid-template-columns: 24mm 1fr 26mm;
+      gap: 2.5mm;
+      padding: 2.5mm;
+      align-items: stretch;
+    }
+
+    .artifact-facilities { display: flex; flex-direction: column; gap: 2mm; }
+
+    .fac-btn {
+      border: 2px solid transparent;
+      border-radius: 2mm;
+      padding: 2mm 1.5mm;
+      text-align: center;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .fac-btn .icon {
+      display: inline-grid;
+      place-items: center;
+      width: 7mm; height: 7mm;
+      margin: 0 auto 1mm;
+      border-radius: 1.5mm;
+      background: rgba(255,255,255,.22);
+      font-size: 11pt;
+      font-weight: 700;
+      font-family: "SimSun", "宋体", serif;
+    }
+
+    .fac-btn .name { font-size: 10pt; font-weight: 700; display: block; }
+    .fac-btn .cost { font-size: 8pt; opacity: .92; display: block; margin-top: .5mm; }
+
+    .fac-btn.coal { background: #df4a35; border-color: #b83220; }
+    .fac-btn.wind { background: #1688d9; border-color: #0f6db3; opacity: .72; }
+    .fac-btn.heatPump { background: #229953; border-color: #187a3f; opacity: .72; }
+    .fac-btn.coal.selected { box-shadow: 0 0 0 2px #123052; opacity: 1; }
+
+    .artifact-map-wrap {
+      position: relative;
+      border: 2px solid #123052;
+      background: #c5d0db;
+      min-height: 0;
+    }
+
+    .artifact-map {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 1px;
-      max-height: 65mm;
-      margin: 0 auto;
+      aspect-ratio: 1;
     }
 
-    .mini-grid span { aspect-ratio: 1; }
+    .artifact-cell {
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      position: relative;
+      min-width: 0;
+    }
 
-    .cell-n { background: #d4e8d4; }
-    .cell-r { background: #f0dcc8; }
-    .cell-c { background: #c8e0f0; }
-    .cell-o { background: #a8d4f0; }
-    .cell-b { background: #d0c8b8; }
-    .cell-coal { background: #555; }
-    .cell-wind { background: #6aab6a; }
-    .cell-hp { background: #4a90a4; }
+    .artifact-cell .terrain-mark {
+      font-size: 7pt;
+      font-weight: 700;
+      color: rgba(92,116,138,.55);
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    .artifact-cell.outlet .terrain-mark {
+      color: #0e7bc7;
+      opacity: .9;
+      font-size: 8pt;
+    }
+
+    .placed-badge {
+      width: 82%;
+      height: 82%;
+      border-radius: 14%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 8.5pt;
+      font-weight: 700;
+      font-family: "SimSun", "宋体", serif;
+      border: 1px solid rgba(255,255,255,.75);
+      box-shadow: 0 1px 3px rgba(0,0,0,.18);
+    }
+
+    .placed-badge.coal { background: #df4a35; }
+    .placed-badge.wind { background: #1688d9; }
+    .placed-badge.heatPump { background: #229953; }
+
+    .wind-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .artifact-metrics { display: flex; flex-direction: column; gap: 2mm; }
+
+    .metric-chip {
+      background: #fff;
+      border: 1px solid #c8d4e0;
+      border-radius: 2mm;
+      padding: 2mm 1.5mm;
+      text-align: center;
+    }
+
+    .metric-chip.score {
+      background: #123052;
+      border-color: #123052;
+      color: #fff;
+    }
+
+    .metric-chip .val {
+      font-size: 15pt;
+      font-weight: 700;
+      line-height: 1.1;
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    .metric-chip .lbl {
+      font-size: 9pt;
+      opacity: .82;
+      margin-top: .8mm;
+      font-family: "SimSun", "宋体", serif;
+    }
+
+    .artifact-mission {
+      margin: 0 2.5mm 2mm;
+      padding: 2mm 2.5mm;
+      background: #fff7e6;
+      border: 1px solid #f0d49a;
+      border-radius: 2mm;
+      font-size: 11pt;
+      color: #6a4b12;
+      font-family: "SimSun", "宋体", serif;
+    }
+
+    .artifact-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2mm 5mm;
+      padding: 2mm 3mm 2.5mm;
+      border-top: 1px solid #c8d4e0;
+      background: #fff;
+      font-size: 11pt;
+      color: var(--muted);
+    }
+
+    .legend-item { display: inline-flex; align-items: center; gap: 1.5mm; white-space: nowrap; }
+
+    .legend-swatch {
+      width: 4.5mm;
+      height: 4.5mm;
+      border: 1px solid rgba(0,0,0,.12);
+      flex-shrink: 0;
+    }
+
+    .legend-fac {
+      display: inline-grid;
+      place-items: center;
+      width: 4.5mm;
+      height: 4.5mm;
+      color: #fff;
+      font-size: 7pt;
+      font-weight: 700;
+      font-family: "SimSun", "宋体", serif;
+      border-radius: 1mm;
+    }
+
+    .game-preview .caption {
+      font-size: 15pt;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 2.5mm;
+      font-style: italic;
+    }
+
+    .game-preview { border: 2px solid var(--accent); padding: 3mm; background: #f7fafb; }
 
     .footer {
       border-top: 3px solid var(--accent);
@@ -289,21 +481,56 @@
 
         <section class="section game-preview">
           <h2>研究原型 <span class="en">Artifact</span></h2>
-          <div class="mini-grid" aria-label="Schematic game grid">
-            <span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span>
-            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-c"></span><span class="cell-o"></span><span class="cell-r"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-r"></span><span class="cell-o"></span><span class="cell-c"></span><span class="cell-r"></span><span class="cell-n"></span>
-            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-wind"></span><span class="cell-c"></span><span class="cell-r"></span><span class="cell-coal"></span><span class="cell-coal"></span><span class="cell-r"></span><span class="cell-c"></span><span class="cell-hp"></span><span class="cell-r"></span><span class="cell-n"></span>
-            <span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span>
-            <span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span>
-            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-wind"></span><span class="cell-b"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-b"></span><span class="cell-hp"></span><span class="cell-r"></span><span class="cell-n"></span>
-            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-coal"></span><span class="cell-b"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-r"></span><span class="cell-b"></span><span class="cell-wind"></span><span class="cell-r"></span><span class="cell-n"></span>
-            <span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-b"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span>
-            <span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span>
-            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-hp"></span><span class="cell-c"></span><span class="cell-r"></span><span class="cell-coal"></span><span class="cell-wind"></span><span class="cell-r"></span><span class="cell-c"></span><span class="cell-coal"></span><span class="cell-r"></span><span class="cell-n"></span>
-            <span class="cell-n"></span><span class="cell-r"></span><span class="cell-c"></span><span class="cell-o"></span><span class="cell-r"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-r"></span><span class="cell-o"></span><span class="cell-c"></span><span class="cell-r"></span><span class="cell-n"></span>
-            <span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-n"></span><span class="cell-c"></span><span class="cell-c"></span><span class="cell-n"></span><span class="cell-n"></span>
+          <div class="artifact-frame">
+            <div class="artifact-titlebar">
+              <div class="artifact-dots"><i></i><i></i><i></i></div>
+              <div class="artifact-url">mayor-climate-game.vercel.app</div>
+            </div>
+            <div class="artifact-body">
+              <div class="artifact-facilities">
+                <div class="fac-btn coal selected">
+                  <span class="icon">煤</span>
+                  <span class="name">煤电</span>
+                  <span class="cost">80 万</span>
+                </div>
+                <div class="fac-btn wind">
+                  <span class="icon">风</span>
+                  <span class="name">风电</span>
+                  <span class="cost">200 万</span>
+                </div>
+                <div class="fac-btn heatPump">
+                  <span class="icon">泵</span>
+                  <span class="name">热泵</span>
+                  <span class="cost">160 万</span>
+                </div>
+              </div>
+              <div class="artifact-map-wrap">
+                <div class="artifact-map" id="artifact-map" aria-label="12 by 12 game map"></div>
+                <svg class="wind-svg" id="artifact-wind" aria-hidden="true"></svg>
+              </div>
+              <div class="artifact-metrics">
+                <div class="metric-chip score">
+                  <div class="val">72</div>
+                  <div class="lbl">城市评分</div>
+                </div>
+                <div class="metric-chip">
+                  <div class="val">26.1°C</div>
+                  <div class="lbl">平均温度</div>
+                </div>
+                <div class="metric-chip">
+                  <div class="val">2.4</div>
+                  <div class="lbl">风速 m/s</div>
+                </div>
+                <div class="metric-chip">
+                  <div class="val">180 t</div>
+                  <div class="lbl">碳排放</div>
+                </div>
+              </div>
+            </div>
+            <div class="artifact-mission">已放置 10 个 · 风电在风道表现更好 · 出风口未放置煤电</div>
+            <div class="artifact-legend" id="artifact-legend"></div>
           </div>
-          <p class="caption">示意网格（非 pilot 真实布局）</p>
+          <p class="caption">示意界面（真实地图地形 + 示例布局，非 pilot 会话截图）</p>
         </section>
       </div>
 
@@ -356,5 +583,128 @@
     </footer>
 
   </article>
+
+  <script>
+  (function () {
+    const terrains = {
+      normal:      { name: "普通区",   color: "#e7edf3", mark: "" },
+      corridor:    { name: "通风廊道", color: "#dff2ff", mark: "›" },
+      outlet:      { name: "风口",     color: "#bfe7ff", mark: "≈" },
+      residential: { name: "居民区",   color: "#ffd39f", mark: "H" },
+      basin:       { name: "低洼盆地", color: "#cfe9c5", mark: "·" }
+    };
+
+    const facilities = {
+      coal:     { label: "煤", color: "#df4a35" },
+      wind:     { label: "风", color: "#1688d9" },
+      heatPump: { label: "泵", color: "#229953" }
+    };
+
+    const mapData = [
+      ["normal","normal","corridor","corridor","corridor","outlet","normal","normal","normal","normal","normal","normal"],
+      ["normal","residential","residential","corridor","corridor","corridor","outlet","normal","normal","normal","normal","normal"],
+      ["normal","residential","residential","residential","corridor","corridor","corridor","outlet","normal","normal","normal","normal"],
+      ["normal","residential","residential","residential","residential","corridor","corridor","corridor","normal","normal","normal","normal"],
+      ["normal","normal","residential","residential","residential","residential","corridor","corridor","corridor","normal","normal","normal"],
+      ["normal","normal","normal","basin","basin","residential","residential","corridor","corridor","outlet","normal","normal"],
+      ["normal","normal","basin","basin","basin","basin","residential","residential","corridor","corridor","normal","normal"],
+      ["normal","normal","basin","basin","basin","basin","basin","residential","residential","corridor","normal","normal"],
+      ["normal","normal","normal","basin","basin","basin","residential","residential","residential","normal","normal","normal"],
+      ["normal","normal","normal","normal","normal","residential","residential","residential","normal","normal","normal","normal"],
+      ["normal","normal","normal","normal","normal","normal","normal","normal","normal","normal","normal","normal"],
+      ["normal","normal","normal","normal","normal","normal","normal","normal","normal","normal","normal","normal"]
+    ];
+
+    /* Illustrative demo layout — not pilot session data */
+    const demoPlacements = {
+      "1,1":"coal", "1,2":"coal", "2,2":"coal",
+      "0,2":"wind",
+      "2,7":"wind", "1,5":"wind",
+      "5,3":"heatPump", "5,4":"heatPump", "6,2":"heatPump",
+      "5,7":"coal"
+    };
+
+    const mapEl = document.getElementById("artifact-map");
+    const windSvg = document.getElementById("artifact-wind");
+    const legendEl = document.getElementById("artifact-legend");
+    if (!mapEl) return;
+
+    mapData.forEach((row, y) => {
+      row.forEach((terrainKey, x) => {
+        const terrain = terrains[terrainKey];
+        const key = `${y},${x}`;
+        const facilityKey = demoPlacements[key] || null;
+        const cell = document.createElement("div");
+        cell.className = `artifact-cell ${terrainKey}`;
+        cell.style.background = terrainKey === "corridor" || terrainKey === "outlet"
+          ? `linear-gradient(90deg, rgba(122,199,238,.35), rgba(191,231,255,.75), rgba(122,199,238,.35)), ${terrain.color}`
+          : terrain.color;
+
+        if (facilityKey) {
+          const badge = document.createElement("span");
+          badge.className = `placed-badge ${facilityKey}`;
+          badge.textContent = facilities[facilityKey].label;
+          cell.appendChild(badge);
+        } else if (terrain.mark) {
+          const mark = document.createElement("span");
+          mark.className = "terrain-mark";
+          mark.textContent = terrain.mark;
+          cell.appendChild(mark);
+        }
+
+        mapEl.appendChild(cell);
+      });
+    });
+
+    function drawWindArrows() {
+      const rect = mapEl.getBoundingClientRect();
+      if (!rect.width) return;
+      const size = 12;
+      const cellW = rect.width / size;
+      const cellH = rect.height / size;
+      windSvg.setAttribute("viewBox", `0 0 ${rect.width} ${rect.height}`);
+      windSvg.innerHTML = `
+        <defs>
+          <marker id="arrow-blue" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#1565c0"/>
+          </marker>
+        </defs>`;
+
+      mapData.forEach((row, y) => {
+        row.forEach((terrainKey, x) => {
+          if (terrainKey !== "corridor" && terrainKey !== "outlet") return;
+          const cx = x * cellW + cellW * 0.32;
+          const cy = y * cellH + cellH * 0.5;
+          const len = Math.min(cellW, cellH) * 0.42;
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("x1", cx);
+          line.setAttribute("y1", cy);
+          line.setAttribute("x2", cx + len);
+          line.setAttribute("y2", cy);
+          line.setAttribute("stroke", "#1565c0");
+          line.setAttribute("stroke-width", "1.6");
+          line.setAttribute("marker-end", "url(#arrow-blue)");
+          line.setAttribute("opacity", "0.85");
+          windSvg.appendChild(line);
+        });
+      });
+    }
+
+    drawWindArrows();
+    window.addEventListener("load", drawWindArrows);
+    window.addEventListener("resize", drawWindArrows);
+
+    if (legendEl) {
+      const terrainItems = Object.entries(terrains).map(([, t]) =>
+        `<span class="legend-item"><span class="legend-swatch" style="background:${t.color}"></span>${t.name}</span>`
+      ).join("");
+      const facItems = Object.entries(facilities).map(([, f]) =>
+        `<span class="legend-item"><span class="legend-fac" style="background:${f.color}">${f.label}</span>${f.label === "煤" ? "煤电" : f.label === "风" ? "风电" : "热泵"}</span>`
+      ).join("");
+      legendEl.innerHTML = terrainItems + facItems +
+        `<span class="legend-item"><span style="color:#1565c0;font-weight:700">→</span> 通风流向</span>`;
+    }
+  })();
+  </script>
 </body>
 </html>
