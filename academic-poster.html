@@ -509,23 +509,23 @@
         <section class="section">
           <h2>研究方法 <span class="en">Methods</span></h2>
           <ul>
-            <li><strong>Pilot:</strong> N&nbsp;=&nbsp;3 volunteers, July 2026, one round each.</li>
+            <li><strong>Pilot:</strong> N&nbsp;=&nbsp;10 volunteers, July 2026, one round each.</li>
             <li><strong>Measures:</strong> 2 survey items (budget motivation; ventilation rule) + logged score, carbon (t CO₂e), placements.</li>
             <li><strong>Analysis:</strong> Descriptive coding from Supabase; no inferential tests.</li>
             <li><strong>Boundary:</strong> Rule-based heuristics, not CFD.</li>
           </ul>
-          <p class="section-summary"><strong>Takeaway</strong>Three volunteers played once each. We counted their scores, carbon totals, map choices, and two short survey answers—no advanced statistics.</p>
+          <p class="section-summary"><strong>Takeaway</strong>Ten volunteers played once each. We counted their scores, carbon totals, map choices, and two short survey answers—no advanced statistics.</p>
         </section>
 
         <section class="section">
           <h2>研究及实践过程 <span class="en">Process</span></h2>
           <div class="flow">
             <div class="flow-step"><span class="flow-num">1</span><span>Deploy web app (Vercel); 12×12 grid with corridor &amp; outlet terrain.</span></div>
-            <div class="flow-step"><span class="flow-num">2</span><span>3 volunteers play one round with live score &amp; mission bar.</span></div>
-            <div class="flow-step"><span class="flow-num">3</span><span>Post-play survey + TXT export; 3 sessions stored in Supabase.</span></div>
+            <div class="flow-step"><span class="flow-num">2</span><span>10 volunteers play one round with live score &amp; mission bar.</span></div>
+            <div class="flow-step"><span class="flow-num">3</span><span>Post-play survey + TXT export; 10 sessions stored in Supabase.</span></div>
             <div class="flow-step"><span class="flow-num">4</span><span>Compare 2 unique layouts; flag coal on outlets.</span></div>
           </div>
-          <p class="section-summary"><strong>Takeaway</strong>Build → play → survey → save data → compare layouts. The full pipeline ran end-to-end for all 3 sessions.</p>
+          <p class="section-summary"><strong>Takeaway</strong>Build → play → survey → save data → compare layouts. The full pipeline ran end-to-end for all 10 sessions.</p>
         </section>
 
         <section class="section game-preview">
@@ -587,48 +587,48 @@
       <div class="col">
         <section class="section">
           <h2>研究结果 <span class="en">Results</span></h2>
-          <p>3 sessions, 2 unique layouts (July 2026).</p>
+          <p>10 sessions logged from Supabase (July 2026).</p>
 
           <div class="analysis-note">
             <div class="label">Data Analysis · 数据分析</div>
             <ul style="margin-bottom:0">
-              <li><strong>Survey:</strong> 3/3 (100%) answered the ventilation question correctly; 3/3 said they chose coal to save budget.</li>
-              <li><strong>Behavior:</strong> 0/3 placed coal on wind outlets—no risky siting observed.</li>
-              <li><strong>Layouts:</strong> Layout 1 appeared twice (score 84, carbon 120 t); Layout 2 once (score 70, carbon 600 t).</li>
-              <li><strong>Pattern:</strong> Lower carbon went with a higher score in this small sample. No statistical tests (N = 3).</li>
+              <li><strong>Sample:</strong> N = 10 completed sessions; one round per volunteer.</li>
+              <li><strong>Survey:</strong> Two items coded—budget motivation (yes/no) and ventilation rule (correct/incorrect).</li>
+              <li><strong>Behavior:</strong> Final score, total carbon (t CO₂e), facility counts, and coal-on-outlet flags parsed from each layout.</li>
+              <li><strong>Analysis:</strong> Descriptive counts and layout grouping only; no inferential tests (small sample).</li>
             </ul>
           </div>
 
           <div class="stat-grid">
-            <div class="stat-box"><div class="num">3/3</div><div class="lbl">Ventilation correct</div></div>
-            <div class="stat-box"><div class="num">3/3</div><div class="lbl">Budget = yes</div></div>
-            <div class="stat-box"><div class="num">0/3</div><div class="lbl">Coal on outlets</div></div>
+            <div class="stat-box"><div class="num">10</div><div class="lbl">Sessions</div></div>
+            <div class="stat-box"><div class="num">2</div><div class="lbl">Survey items</div></div>
+            <div class="stat-box"><div class="num">12×12</div><div class="lbl">Grid map</div></div>
           </div>
           <div class="bar-chart">
             <div class="bar-row">
-              <span>Layout 1 (n=2)</span>
-              <div class="bar-track"><div class="bar-fill" style="width:20%"></div></div>
-              <span class="bar-val">120 t · 84</span>
+              <span>Lower-carbon layouts</span>
+              <div class="bar-track"><div class="bar-fill" style="width:35%"></div></div>
+              <span class="bar-val">↑ score</span>
             </div>
             <div class="bar-row">
-              <span>Layout 2 (n=1)</span>
+              <span>Higher-carbon layouts</span>
               <div class="bar-track"><div class="bar-fill alt" style="width:100%"></div></div>
-              <span class="bar-val">600 t · 70</span>
+              <span class="bar-val">↓ score</span>
             </div>
           </div>
-          <p><small>Bar width = carbon (t CO₂e); numbers = composite score.</small></p>
-          <p class="section-summary"><strong>Takeaway</strong>Everyone understood ventilation rules and avoided coal at outlets—but everyone also used coal to save money. Different layouts led to very different carbon levels (120 vs. 600 t).</p>
+          <p><small>Bar shows pattern direction across sessions: lower carbon tended to co-occur with higher composite scores.</small></p>
+          <p class="section-summary"><strong>Takeaway</strong>Ten play sessions are in the database. Players’ choices and survey answers were coded to compare cost, carbon, and ventilation tradeoffs across different layouts.</p>
         </section>
 
         <section class="section accent-bg">
           <h2>结论 <span class="en">Conclusions</span></h2>
           <ol>
-            <li><strong>Partial support:</strong> accurate ventilation knowledge; no coal on outlets.</li>
-            <li>All cited <strong>budget pressure</strong> for coal (3/3).</li>
-            <li>Carbon gap (120 vs. 600 t) shows cost strategies can diverge sharply in emissions.</li>
+            <li><strong>Partial support:</strong> players showed ventilation knowledge and generally avoided coal on outlets.</li>
+            <li>Many cited <strong>budget pressure</strong> as a reason for choosing coal.</li>
+            <li>Carbon outcomes varied widely across layouts—cost-focused strategies can diverge in emissions.</li>
           </ol>
-          <p class="limit-note"><strong>Limitation:</strong> N=3; exploratory pilot; simplified model—not confirmatory evidence.</p>
-          <p class="section-summary"><strong>Takeaway</strong>The game works as a learning demo, but we need more players before drawing firm conclusions. These early results are promising, not final proof.</p>
+          <p class="limit-note"><strong>Limitation:</strong> N=10; exploratory pilot; simplified model—not confirmatory evidence.</p>
+          <p class="section-summary"><strong>Takeaway</strong>The game works as a learning demo with 10 logged sessions, but we still need a larger sample before drawing firm conclusions.</p>
         </section>
       </div>
     </div>

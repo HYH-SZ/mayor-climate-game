@@ -1,0 +1,9 @@
+{
+  "total": 10,
+  "note": "Session count confirmed by author. Run node scripts/analyze-results.mjs locally to fill ventCorrect, budgetYes, coalOutletSessions, and layoutStats from Supabase.",
+  "ventCorrect": null,
+  "budgetYes": null,
+  "coalOutletSessions": null,
+  "uniqueLayouts": null,
+  "layoutStats": []
+}
