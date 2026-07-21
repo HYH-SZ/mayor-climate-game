@@ -103,6 +103,50 @@
     .section li { margin-bottom: 2mm; }
     .section strong { color: var(--accent); }
 
+    .section-summary {
+      margin-top: 3.5mm;
+      padding-top: 2.5mm;
+      border-top: 2px dashed var(--accent);
+      font-size: 18pt;
+      line-height: 1.4;
+      color: var(--muted);
+      font-family: "Times New Roman", Times, serif;
+      font-style: italic;
+    }
+
+    .section-summary strong {
+      font-style: normal;
+      color: var(--accent);
+      font-size: 17pt;
+      display: block;
+      margin-bottom: 1mm;
+      letter-spacing: 0.04em;
+    }
+
+    .rq-box .section-summary {
+      border-top-color: rgba(255,255,255,.4);
+      color: rgba(255,255,255,.88);
+    }
+
+    .rq-box .section-summary strong { color: #fff; }
+
+    .analysis-note {
+      background: #fff;
+      border-left: 3px solid var(--accent);
+      padding: 2.5mm 3mm;
+      margin: 3mm 0;
+      font-size: 18pt;
+      line-height: 1.35;
+    }
+
+    .analysis-note .label {
+      font-size: 16pt;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1mm;
+      font-family: "Times New Roman", Times, serif;
+    }
+
     .rq-box {
       background: var(--accent);
       color: #fff;
@@ -440,6 +484,7 @@
           <h2>课题简介 <span class="en">Introduction</span></h2>
           <p>Cities need energy choices balancing <strong>cost, carbon, and ventilation</strong>. Rising heat and cooling demand increase emissions pressure; ventilation corridors help when siting respects airflow. Professional CFD/WRF tools are powerful but hard for learners—serious games offer immediate feedback and logged choices.</p>
           <p><em>Mayor Climate Game</em> is a browser prototype: allocate CNY&nbsp;10M across coal, wind, and heat pumps on a 12×12 terrain grid with live temperature, wind, carbon, and composite score.</p>
+          <p class="section-summary"><strong>Takeaway</strong>Cities must balance cheap energy, low carbon, and good airflow—but pro tools are too hard for beginners. This game makes those tradeoffs easy to see and play with.</p>
         </section>
 
         <section class="section accent-bg">
@@ -449,12 +494,14 @@
             <li>Auto-logs layout choices for small-scale classroom research.</li>
             <li>Complements—not replaces—professional urban-climate models.</li>
           </ul>
+          <p class="section-summary"><strong>Takeaway</strong>The game is a low-cost teaching tool: players learn by doing, and every choice is saved for later study.</p>
         </section>
 
         <section class="section rq-box">
           <h2>研究问题 Research Question</h2>
           <p>How does the game shape facility choices and post-play understanding of budget–carbon–ventilation tradeoffs?</p>
           <p style="margin-top:3mm;"><strong>Hypothesis:</strong> Participants avoid coal on ventilation-sensitive cells and answer the ventilation rule correctly after one round.</p>
+          <p class="section-summary"><strong>Takeaway</strong>We ask: after one play session, do people place facilities wisely and understand why ventilation matters?</p>
         </section>
       </div>
 
@@ -467,6 +514,7 @@
             <li><strong>Analysis:</strong> Descriptive coding from Supabase; no inferential tests.</li>
             <li><strong>Boundary:</strong> Rule-based heuristics, not CFD.</li>
           </ul>
+          <p class="section-summary"><strong>Takeaway</strong>Three volunteers played once each. We counted their scores, carbon totals, map choices, and two short survey answers—no advanced statistics.</p>
         </section>
 
         <section class="section">
@@ -477,6 +525,7 @@
             <div class="flow-step"><span class="flow-num">3</span><span>Post-play survey + TXT export; 3 sessions stored in Supabase.</span></div>
             <div class="flow-step"><span class="flow-num">4</span><span>Compare 2 unique layouts; flag coal on outlets.</span></div>
           </div>
+          <p class="section-summary"><strong>Takeaway</strong>Build → play → survey → save data → compare layouts. The full pipeline ran end-to-end for all 3 sessions.</p>
         </section>
 
         <section class="section game-preview">
@@ -531,13 +580,25 @@
             <div class="artifact-legend" id="artifact-legend"></div>
           </div>
           <p class="caption">示意界面（真实地图地形 + 示例布局，非 pilot 会话截图）</p>
+          <p class="section-summary"><strong>Takeaway</strong>Players pick coal, wind, or heat pumps on a city map and see live scores change—this is the research tool we tested.</p>
         </section>
       </div>
 
       <div class="col">
         <section class="section">
           <h2>研究结果 <span class="en">Results</span></h2>
-          <p>3 sessions, 2 unique layouts (July 2026). Lower carbon co-occurred with higher composite score in this pilot.</p>
+          <p>3 sessions, 2 unique layouts (July 2026).</p>
+
+          <div class="analysis-note">
+            <div class="label">Data Analysis · 数据分析</div>
+            <ul style="margin-bottom:0">
+              <li><strong>Survey:</strong> 3/3 (100%) answered the ventilation question correctly; 3/3 said they chose coal to save budget.</li>
+              <li><strong>Behavior:</strong> 0/3 placed coal on wind outlets—no risky siting observed.</li>
+              <li><strong>Layouts:</strong> Layout 1 appeared twice (score 84, carbon 120 t); Layout 2 once (score 70, carbon 600 t).</li>
+              <li><strong>Pattern:</strong> Lower carbon went with a higher score in this small sample. No statistical tests (N = 3).</li>
+            </ul>
+          </div>
+
           <div class="stat-grid">
             <div class="stat-box"><div class="num">3/3</div><div class="lbl">Ventilation correct</div></div>
             <div class="stat-box"><div class="num">3/3</div><div class="lbl">Budget = yes</div></div>
@@ -556,6 +617,7 @@
             </div>
           </div>
           <p><small>Bar width = carbon (t CO₂e); numbers = composite score.</small></p>
+          <p class="section-summary"><strong>Takeaway</strong>Everyone understood ventilation rules and avoided coal at outlets—but everyone also used coal to save money. Different layouts led to very different carbon levels (120 vs. 600 t).</p>
         </section>
 
         <section class="section accent-bg">
@@ -566,6 +628,7 @@
             <li>Carbon gap (120 vs. 600 t) shows cost strategies can diverge sharply in emissions.</li>
           </ol>
           <p class="limit-note"><strong>Limitation:</strong> N=3; exploratory pilot; simplified model—not confirmatory evidence.</p>
+          <p class="section-summary"><strong>Takeaway</strong>The game works as a learning demo, but we need more players before drawing firm conclusions. These early results are promising, not final proof.</p>
         </section>
       </div>
     </div>
